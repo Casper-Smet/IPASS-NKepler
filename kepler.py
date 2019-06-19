@@ -43,15 +43,7 @@ def true_anomaly(e):
     #                                      + 13 / 12 * e ** 3 * sin(3 * M))
 
 
-def range_setter(var, minimum, maximum):
-    """Alters var to be within two given values, used in mean_anomaly()"""
-    while var > maximum or var < minimum:
-        if var < minimum:
-            var += maximum
-        else:
-            var -= maximum
 
-    return var
 
 
 def radius_vector(a, e, v):
