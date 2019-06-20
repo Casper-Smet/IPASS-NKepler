@@ -1,5 +1,5 @@
 from math import cos, sin
-from utility import gravitational_constant, pi, degrees, radians, range_setter, accuracy
+from utility import gravitational_constant, pi, degrees, radians, range_setter, accuracy, time_interval
 
 from functools import lru_cache
 
@@ -7,6 +7,10 @@ from functools import lru_cache
 # Todo Write my own sin and cos functions
 # Todo JSON Initializer
 # Todo time interval selector (seconds, minutes, hours, days)
+# Todo add a function that gives coords at time = t, add calculate orbit function
+# Todo bug fix time = t to complete full orbit (Semi-done)
+# Todo add position of focus as argument to angle_to_x, angle_to_y
+
 class Focus:
     """Object around which satellite will  orbit"""
     name = ""
@@ -148,15 +152,17 @@ class Satellite:
         return sin(angle) * self.radius
 
     def angle_to_coordinates(self, period=None) -> tuple:
-        """Translates angular position to coordinates
+        """Translates angular position to coordinates (Will be rewritten in next version)
         :rtype: tuple
         :return: y and x coordinates
         """
+        # Todo This is truly an abysmal function. Rewrite.
         if not period:
             period = self.period
         # lambda: O(t) = w * t
-        angular_positions = map(lambda t: round(range_setter(self.angular_velocity * t, 0, radians(360)), accuracy),
-                                range(int(period)))
+        angular_positions = map(
+            lambda t: round(range_setter(self.angular_velocity * t * time_interval, 0, radians(360)), accuracy),
+            range(int(period / time_interval)))
         x_coords, y_coords = list(), list()
         for a_pos in angular_positions:
             # X = cos(O(t)) * r
@@ -166,9 +172,11 @@ class Satellite:
         return y_coords, x_coords
 
     def __str__(self) -> str:
-        return "Name: {}, Mass: {}, Radius: {}, Focus: {}, Velocity: {}, Angular Velocity: {}".format(self.name,
-                                                                                                      self.mass,
-                                                                                                      self.radius,
-                                                                                                      self.focus,
-                                                                                                      self.velocity,
-                                                                                                      self.angular_velocity)
+        return "Name: {}, Mass: {}, Radius: {}, Period: {} Focus: {}, Velocity: {}, Angular Velocity: {}".format(
+            self.name,
+            self.mass,
+            self.radius,
+            self.period,
+            self.focus,
+            self.velocity,
+            self.angular_velocity)
