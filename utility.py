@@ -1,6 +1,7 @@
 gravitational_constant = 6.67408 * 10 ** (-11)  # m^3/kgs^2
 pi = 3.14159265359
 accuracy = 2
+time_interval = 1 * 60 * 60   # in seconds
 
 
 def degrees(angle):
