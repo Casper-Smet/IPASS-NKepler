@@ -1,7 +1,6 @@
 gravitational_constant = 6.67408 * 10 ** (-11)  # m^3/kgs^2
 pi = 3.14159265359
-accuracy = 2
-time_interval = 1 * 60 * 60   # in seconds
+
 
 
 def degrees(angle):
@@ -20,11 +19,11 @@ def radians(angle):
         print(e)
 
 
-def range_setter(var, minimum, maximum):
+def range_setter(var, maximum):
     """Alters var to be within two given values, used in mean_anomaly()"""
-    while var > maximum or var < minimum:
-        if var < minimum:
-            var += maximum
-        else:
-            var -= maximum
-    return var
+    # while var > maximum or var < minimum:
+    #     if var < minimum:
+    #         var += maximum
+    #     else:
+    #         var -= maximum
+    return var % maximum
