@@ -1,14 +1,11 @@
 from math import cos, sin
-from utility import gravitational_constant, pi, degrees, radians, range_setter, accuracy, time_interval
-
+from utility import gravitational_constant, pi, degrees, radians, range_setter
+import json
 from functools import lru_cache
 
 
 # Todo Write my own sin and cos functions
-# Todo JSON Initializer
-# Todo time interval selector (seconds, minutes, hours, days)
-# Todo add a function that gives coords at time = t, add calculate orbit function
-# Todo bug fix time = t to complete full orbit (Semi-done)
+# Todo bug fix time = t to complete full orbit (Semi-done) Fixed itself?
 # Todo add position of focus as argument to angle_to_x, angle_to_y
 
 class Focus:
@@ -50,12 +47,21 @@ class Satellite:
     # period: float = 0.0
     # angular_velocity: float = 0.0
 
+    accuracy: int = 2
+    time_interval: int = 1 * 60 * 60
+
     def __init__(self, name: str, mass: float, focus: Focus = None, radius: float = None, velocity: float = None,
-                 period: float = None, angular_velocity: float = None):
+                 period: float = None, angular_velocity: float = None, orbit: tuple = None):
         """
         Initializer for Satellite
-        :param name: Str
-        :param mass: Float
+        :param focus: Focus
+        :param radius: float
+        :param velocity: float
+        :param period: float
+        :param angular_velocity:
+        :param orbit: list
+        :param name: str
+        :param mass: float
         """
         try:
             # Independent of focus
@@ -71,9 +77,38 @@ class Satellite:
             self.period = period
             #     Calculated from velocity and radius
             self.angular_velocity = angular_velocity
+            #     Calculated from angular velocity and radius
+            self.orbit = orbit
 
         except TypeError as e:
             print("An unaccepted variable type was entered, Satellite requires Str, Float\n", e)
+
+    def to_json(self, filename: str = None):
+        """
+        Dumps satellite and focus data to JSON
+        :param filename: str
+        """
+        if not filename:
+            filename = self.name
+        data = dict()
+        data['name'] = self.name
+        data['mass'] = self.mass
+        data['focus'] = dict()
+        data['focus']['name'] = self.focus.name
+        data['focus']['mass'] = self.focus.mass
+        data['radius'] = self.radius
+        data['velocity'] = self.velocity
+        data['period'] = self.period
+        data['angular_velocity'] = self.angular_velocity
+        data['orbit'] = dict()
+        data['orbit']['time_interval'] = self.time_interval
+        data['orbit']['accuracy'] = self.accuracy
+        data['orbit']['coordinates'] = dict()
+        data['orbit']['coordinates']['x'] = self.orbit[0]
+        data['orbit']['coordinates']['y'] = self.orbit[1]
+
+        with open(filename + '.json', 'w') as outfile:
+            json.dump(data, outfile, indent=4)
 
     def set_focus(self, focus: Focus, radius: float):
         """
@@ -137,7 +172,6 @@ class Satellite:
         :param angle: float radians
         :return: x-coordinate
         """
-        # print(angle)
         return cos(angle) * self.radius
 
     @lru_cache(maxsize=None)
@@ -148,21 +182,53 @@ class Satellite:
         :param angle: float radians
         :return: y-coordinate
         """
-        # print(angle)
         return sin(angle) * self.radius
+
+    def angular_position_at_t(self):
+        """
+        Returns lambda that calculates angular position at time index t
+        O(t) = wt
+        """
+        return lambda t: round(range_setter(self.angular_velocity * t * self.time_interval, radians(360)),
+                               self.accuracy)
+
+    def angular_position_to_coordinates(self, angular_position: float) -> tuple:
+        """
+        Calculates X,Y coordinates with angular position. Calls angle_to_y and angle_to_x
+        :return: x,y
+        :param angular_position:
+        :rtype: tuple
+        """
+        x = self.angle_to_x(angular_position)
+        y = self.angle_to_y(angular_position)
+        return x, y
+
+    def calculate_orbit(self) -> list:
+        """
+        Calculates all orbital coordinates
+        :return: orbit
+        """
+        orbit = [[], []]
+        angular_pos = map(self.angular_position_at_t(), range(int(self.radius / self.time_interval) + 1))
+        for angle in angular_pos:
+            x, y = self.angular_position_to_coordinates(angle)
+            orbit[0].append(x)
+            orbit[1].append(y)
+        self.orbit = orbit
+        return orbit
 
     def angle_to_coordinates(self, period=None) -> tuple:
         """Translates angular position to coordinates (Will be rewritten in next version)
         :rtype: tuple
         :return: y and x coordinates
         """
-        # Todo This is truly an abysmal function. Rewrite.
+        print("WARNING: this function deprecated, use calculate_orbit instead")
         if not period:
             period = self.period
         # lambda: O(t) = w * t
         angular_positions = map(
-            lambda t: round(range_setter(self.angular_velocity * t * time_interval, 0, radians(360)), accuracy),
-            range(int(period / time_interval)))
+            lambda t: round(range_setter(self.angular_velocity * t * self.time_interval, radians(360)), self.accuracy),
+            range(int(period / self.time_interval) + 1))
         x_coords, y_coords = list(), list()
         for a_pos in angular_positions:
             # X = cos(O(t)) * r
@@ -180,3 +246,40 @@ class Satellite:
             self.focus,
             self.velocity,
             self.angular_velocity)
+
+
+def json_satellite_construct(file_string: str) -> tuple:
+    """
+    :rtype: tuple
+    :param file_string: str
+    :return: a tuple containing a satellite and a focus
+    """
+    # Todo docstring json_satellite_construct
+    with open(file_string + '.json') as satellite_json:
+        data = json.load(satellite_json)
+        print(data)
+    # Get satellite data
+    sat_name = data['name']
+    sat_mass = data['mass']
+    sat_radius = data['radius']
+    sat_velocity = data['velocity']
+    sat_period = data['period']
+    sat_angular_velocity = data['angular_velocity']
+    sat_orbit = data['orbit']['coordinates']['x'], data['orbit']['coordinates']['y']
+
+    # Get focus data
+    focus_name = data['focus']['name']
+    focus_mass = data['focus']['mass']
+    #  Construct focus and satellite
+    focus = Focus(focus_name, focus_mass)
+    sat = Satellite(sat_name, sat_mass, focus, sat_radius, sat_velocity, sat_period, sat_angular_velocity, sat_orbit)
+
+    # Get independent variables
+    sat_time_interval = data['orbit']['time_interval']
+    sat_accuracy = data['orbit']['accuracy']
+
+    # Set independent variables
+    sat.time_interval = sat_time_interval
+    sat.accuracy = sat_accuracy
+
+    return sat, focus
