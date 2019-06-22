@@ -28,7 +28,7 @@ def calculate_orbit_system(focus):
     satellites = focus.satellite_list
     for sat in satellites:
         # sat.time_interval = 1 * 60 * 60 * 24  # days recommended for inner planets
-        # sat.time_interval = 1 * 60 * 60 * 24 * 365 / 12  # months recommended for outer planets
+        sat.time_interval = 1 * 60 * 60 * 24 * 365 / 12  # months recommended for outer planets
         sat.calculate_velocity()
         sat.calculate_period()
         sat.calculate_angular_velocity()
