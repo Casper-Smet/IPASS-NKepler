@@ -1,0 +1,17 @@
+{
+    "name": "Mars",
+    "mass": 6.42e+23,
+    "focus": {
+        "name": "Sun",
+        "mass": 1.989e+30
+    },
+    "radius": 228003390000.0,
+    "velocity": 24129.173349087152,
+    "period": 59371596.75175647,
+    "angular_velocity": 1.0582813417417676e-07,
+    "orbit": {
+        "time_interval": 86400,
+        "accuracy": 2,
+        "coordinates": {}
+    }
+}

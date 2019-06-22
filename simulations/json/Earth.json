@@ -1,0 +1,17 @@
+{
+    "name": "Earth",
+    "mass": 5.972e+24,
+    "focus": {
+        "name": "Sun",
+        "mass": 1.989e+30
+    },
+    "radius": 149600000000,
+    "velocity": 29788.408361765025,
+    "period": 31554707.809116162,
+    "angular_velocity": 1.991203767497662e-07,
+    "orbit": {
+        "time_interval": 86400,
+        "accuracy": 2,
+        "coordinates": {}
+    }
+}

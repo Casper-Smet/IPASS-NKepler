@@ -1,0 +1,17 @@
+{
+    "name": "Neptune",
+    "mass": 1.024e+26,
+    "focus": {
+        "name": "Sun",
+        "mass": 1.989e+30
+    },
+    "radius": 4498024600000.0,
+    "velocity": 5432.530614997831,
+    "period": 5202349343.422058,
+    "angular_velocity": 1.2077592050069784e-09,
+    "orbit": {
+        "time_interval": 86400,
+        "accuracy": 2,
+        "coordinates": {}
+    }
+}

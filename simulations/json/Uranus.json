@@ -1,0 +1,17 @@
+{
+    "name": "Uranus",
+    "mass": 8.68e+25,
+    "focus": {
+        "name": "Sun",
+        "mass": 1.989e+30
+    },
+    "radius": 2871058200000.0,
+    "velocity": 6799.736719153489,
+    "period": 2652954289.757327,
+    "angular_velocity": 2.368372998901063e-09,
+    "orbit": {
+        "time_interval": 86400,
+        "accuracy": 2,
+        "coordinates": {}
+    }
+}

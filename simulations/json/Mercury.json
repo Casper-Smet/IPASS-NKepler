@@ -1,0 +1,17 @@
+{
+    "name": "Mercury",
+    "mass": 3.3e+23,
+    "focus": {
+        "name": "Sun",
+        "mass": 1.989e+30
+    },
+    "radius": 57902440000.0,
+    "velocity": 47881.15996033657,
+    "period": 7598223.613614272,
+    "angular_velocity": 8.269281909421532e-07,
+    "orbit": {
+        "time_interval": 86400,
+        "accuracy": 2,
+        "coordinates": {}
+    }
+}

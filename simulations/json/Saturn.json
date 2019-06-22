@@ -1,0 +1,17 @@
+{
+    "name": "Saturn",
+    "mass": 5.68e+26,
+    "focus": {
+        "name": "Sun",
+        "mass": 1.989e+30
+    },
+    "radius": 1427058200000.0,
+    "velocity": 9644.77838309245,
+    "period": 929671036.3453449,
+    "angular_velocity": 6.758503880985689e-09,
+    "orbit": {
+        "time_interval": 86400,
+        "accuracy": 2,
+        "coordinates": {}
+    }
+}

@@ -1,0 +1,17 @@
+{
+    "name": "Jupiter",
+    "mass": 1.9e+27,
+    "focus": {
+        "name": "Sun",
+        "mass": 1.989e+30
+    },
+    "radius": 788369910000.0,
+    "velocity": 12976.216282715606,
+    "period": 381734869.9507171,
+    "angular_velocity": 1.64595529561949e-08,
+    "orbit": {
+        "time_interval": 86400,
+        "accuracy": 2,
+        "coordinates": {}
+    }
+}
