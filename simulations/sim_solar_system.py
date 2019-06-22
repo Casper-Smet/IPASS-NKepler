@@ -1,5 +1,4 @@
 from classes import Focus, Satellite, json_satellite_construct
-from utility import lcm
 import matplotlib;
 
 matplotlib.use("TkAgg")
@@ -28,7 +27,8 @@ def animate(i):
 def calculate_orbit_system(focus):
     satellites = focus.satellite_list
     for sat in satellites:
-        sat.time_interval = 1 * 60 * 60 * 24
+        # sat.time_interval = 1 * 60 * 60 * 24  # days recommended for inner planets
+        # sat.time_interval = 1 * 60 * 60 * 24 * 365 / 12  # months recommended for outer planets
         sat.calculate_velocity()
         sat.calculate_period()
         sat.calculate_angular_velocity()
@@ -36,13 +36,11 @@ def calculate_orbit_system(focus):
 
     lambda_dict = dict()
 
-    period = lcm(earth.period, mars.period)
-    # period = neptune.period
     for sat in satellites:
         lambda_dict[sat.name] = sat.angular_position_at_t()
         # sat.calculate_orbit(period)
         # sat.to_json("json/{}".format(sat.name))
-    return period / sat.time_interval, lambda_dict
+    return lambda_dict
 
 
 if __name__ == '__main__':
@@ -51,17 +49,17 @@ if __name__ == '__main__':
     # It is recommended to simulate mercury, venus, mars and earth separately from Jupiter, Saturn, Uranus and Neptune.
     # The latter being so much further from the sun that you cannot properly differentiate between the earlier planets.
     # The orbital periods of the latter also being substantially larger from the earlier (years instead of months)
-    mercury = Satellite("Mercury", 0.330E24, sun, 0.0579E12 + 2.440E6)
-    venus = Satellite("Venus", 4.87E24, sun, 0.1082E12 + 6.052E6)
-    earth = Satellite("Earth", 5.972E24, sun, 149600000000)
-    mars = Satellite("Mars", 0.642E24, sun, 0.228E12 + 3.390E6)
+    # mercury = Satellite("Mercury", 0.330E24, sun, 0.0579E12 + 2.440E6)
+    # venus = Satellite("Venus", 4.87E24, sun, 0.1082E12 + 6.052E6)
+    # earth = Satellite("Earth", 5.972E24, sun, 149600000000)
+    # mars = Satellite("Mars", 0.642E24, sun, 0.228E12 + 3.390E6)
 
-    # jupiter = Satellite("Jupiter", 1900E24, sun, 0.7883E12 + 69.91E6)
-    # saturn = Satellite("Saturn", 568E24, sun, 1.427E12 + 58.2E6)
-    # uranus = Satellite("Uranus", 86.8E24, sun, 2.871E12 + 58.2E6)
-    # neptune = Satellite("Neptune", 102.4E24, sun, 4.498E12 + 24.6E6)
+    jupiter = Satellite("Jupiter", 1900E24, sun, 0.7883E12 + 69.91E6)
+    saturn = Satellite("Saturn", 568E24, sun, 1.427E12 + 58.2E6)
+    uranus = Satellite("Uranus", 86.8E24, sun, 2.871E12 + 58.2E6)
+    neptune = Satellite("Neptune", 102.4E24, sun, 4.498E12 + 24.6E6)
 
-    per, lambda_dict = calculate_orbit_system(sun)
+    lambda_dict = calculate_orbit_system(sun)
 
     periods = [x.period for x in sun.satellite_list]
 
@@ -72,9 +70,9 @@ if __name__ == '__main__':
     box = ax1.get_position()
     ax1.set_position([box.x0 + box.width * 0.1, box.y0, box.width * 0.5, box.height / 6 * 5])
 
-    ani = animation.FuncAnimation(fig, animate, interval=1, frames=int(max(periods) / mars.time_interval))
+    ani = animation.FuncAnimation(fig, animate, interval=1, frames=int(max(periods) / jupiter.time_interval))
 
-    plt.show()
+    # plt.show()
 
     # Uncomment the following line to save as GIF, make sure you've got imagemagick installed
-    # ani.save("orbits/solarinner.gif", writer='imagemagick', fps=30)
+    # ani.save("orbits/solarouter.gif", writer='imagemagick', fps=30)
