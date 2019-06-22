@@ -1,0 +1,17 @@
+{
+    "name": "Callisto",
+    "mass": 1.076e+23,
+    "focus": {
+        "name": "Jupyter",
+        "mass": 1.9e+27
+    },
+    "radius": 1885410000.0,
+    "velocity": 8201.052676215662,
+    "period": 1444495.1005334477,
+    "angular_velocity": 4.349744976538611e-06,
+    "orbit": {
+        "time_interval": 3600,
+        "accuracy": 2,
+        "coordinates": {}
+    }
+}

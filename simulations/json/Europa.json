@@ -1,0 +1,17 @@
+{
+    "name": "Europa",
+    "mass": 4.8e+22,
+    "focus": {
+        "name": "Jupyter",
+        "mass": 1.9e+27
+    },
+    "radius": 672468000.0,
+    "velocity": 13732.091643065318,
+    "period": 307691.0034519366,
+    "angular_velocity": 2.042043880610723e-05,
+    "orbit": {
+        "time_interval": 3600,
+        "accuracy": 2,
+        "coordinates": {}
+    }
+}

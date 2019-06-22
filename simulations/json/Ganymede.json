@@ -1,0 +1,17 @@
+{
+    "name": "Ganymede",
+    "mass": 148000.0,
+    "focus": {
+        "name": "Jupyter",
+        "mass": 1.9e+27
+    },
+    "radius": 1072631000.0,
+    "velocity": 10872.94853453727,
+    "period": 619844.6831434958,
+    "angular_velocity": 1.0136709208047567e-05,
+    "orbit": {
+        "time_interval": 3600,
+        "accuracy": 2,
+        "coordinates": {}
+    }
+}

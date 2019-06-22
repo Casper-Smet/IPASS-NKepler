@@ -1,0 +1,17 @@
+{
+    "name": "Io",
+    "mass": 8.9e+22,
+    "focus": {
+        "name": "Jupyter",
+        "mass": 1.9e+27
+    },
+    "radius": 423622000.0,
+    "velocity": 17301.47985378677,
+    "period": 153842.07297248286,
+    "angular_velocity": 4.0841787852818715e-05,
+    "orbit": {
+        "time_interval": 3600,
+        "accuracy": 2,
+        "coordinates": {}
+    }
+}
