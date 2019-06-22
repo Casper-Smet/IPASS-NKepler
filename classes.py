@@ -229,26 +229,6 @@ class Satellite:
         self.orbit = orbit
         return orbit
 
-    def angle_to_coordinates(self, period=None) -> tuple:
-        """Translates angular position to coordinates (Will be rewritten in next version)
-        :rtype: tuple
-        :return: y and x coordinates
-        """
-        print("WARNING: this function deprecated, use calculate_orbit instead")
-        if not period:
-            period = self.period
-        # lambda: O(t) = w * t
-        angular_positions = map(
-            lambda t: round(range_setter(self.angular_velocity * t * self.time_interval, radians(360)), self.accuracy),
-            range(int(period / self.time_interval) + 1))
-        x_coords, y_coords = list(), list()
-        for a_pos in angular_positions:
-            # X = cos(O(t)) * r
-            x_coords.append(self.angle_to_x(a_pos))
-            # Y = sin(O(t)) * r
-            y_coords.append(self.angle_to_y(a_pos))
-        return y_coords, x_coords
-
     def __str__(self) -> str:
         return "Name: {}, Mass: {}, Radius: {}, Period: {} Focus: {}, Velocity: {}, Angular Velocity: {}".format(
             self.name,
