@@ -4,7 +4,6 @@ import json
 from functools import lru_cache
 
 
-# Todo Write my own sin and cos functions
 # Todo bug fix time = t to complete full orbit (Semi-done) Fixed itself?
 # Todo add position of focus as argument to angle_to_x, angle_to_y
 
@@ -30,6 +29,10 @@ class Focus:
 
     def add_to_satellites(self, satellite: object):
         self.satellite_list.append(satellite)
+
+    def largest_radius(self):
+        radii = [x.radius for x in self.satellite_list]
+        return max(radii)
 
 
 class Satellite:
@@ -186,9 +189,10 @@ class Satellite:
 
     def angular_position_at_t(self):
         """
-        Returns lambda that calculates angular position at time index t
+        Returns lambda that calculates angular position at time index t.
         O(t) = wt
         """
+        # Todo explain time interval
         return lambda t: round(range_setter(self.angular_velocity * t * self.time_interval, radians(360)),
                                self.accuracy)
 
@@ -203,13 +207,21 @@ class Satellite:
         y = self.angle_to_y(angular_position)
         return x, y
 
-    def calculate_orbit(self) -> list:
+    def calculate_orbit(self, period: float = None) -> list:
         """
         Calculates all orbital coordinates
+        :param period: float
         :return: orbit
         """
+        # If no period is given, set period to self.period
+        if not period:
+            period = self.period
+        # Initialize two-dimensional list
         orbit = [[], []]
-        angular_pos = map(self.angular_position_at_t(), range(int(self.radius / self.time_interval) + 1))
+        # Generate a map of angular_positions for given period
+        # Todo explain time interval
+        angular_pos = map(self.angular_position_at_t(), range(int(period / self.time_interval) + 1))
+        # For each angular position, generate x,y coordinates, append coordinates to orbit
         for angle in angular_pos:
             x, y = self.angular_position_to_coordinates(angle)
             orbit[0].append(x)
@@ -254,10 +266,9 @@ def json_satellite_construct(file_string: str) -> tuple:
     :param file_string: str
     :return: a tuple containing a satellite and a focus
     """
-    # Todo docstring json_satellite_construct
     with open(file_string + '.json') as satellite_json:
         data = json.load(satellite_json)
-        print(data)
+
     # Get satellite data
     sat_name = data['name']
     sat_mass = data['mass']
