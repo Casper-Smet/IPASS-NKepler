@@ -6,7 +6,6 @@ from functools import lru_cache
 
 # Todo optimization with lru_cache
 # Todo decide on whether or not to save orbits
-# Todo add warning: orbits not recommended to save. Might not be loadable. (size)
 # Todo bug fix time = t to complete full orbit (Semi-done) Fixed itself?
 # Todo add position of focus as argument to angle_to_x, angle_to_y
 
@@ -93,10 +92,13 @@ class Satellite:
     def to_json(self, filename: str = None, save_orbit: bool = False):
         """
         Dumps satellite and focus data to JSON
+        :param save_orbit: bool
         :param filename: str
         """
 
-
+        if save_orbit:
+            print("Warning, it is not recommended to save orbit to JSON. Loading in the orbits from JSON causes errors"
+                  "due to size")
 
         # If no filename is given, use satellite name as name
         if not filename:
@@ -116,7 +118,7 @@ class Satellite:
         data['orbit']['time_interval'] = self.time_interval
         data['orbit']['accuracy'] = self.accuracy
         data['orbit']['coordinates'] = dict()
-        # If an orbit has been calculated, save orbit to JSON
+        # If an orbit has been calculated and the user wants to save orbit, save orbit to JSON
         if self.orbit and save_orbit:
             data['orbit']['coordinates']['x'] = self.orbit[0]
             data['orbit']['coordinates']['y'] = self.orbit[1]
