@@ -53,7 +53,7 @@ class Satellite:
     # angular_velocity: float = 0.0
 
     accuracy: int = 2
-    time_interval: int = 1 * 60 * 60
+    time_interval: int = 1 * 60 * 60  # step size for t in seconds. Base position is 3600 (1 hour)
 
     def __init__(self, name: str, mass: float, focus: Focus = None, radius: float = None, velocity: float = None,
                  period: float = None, angular_velocity: float = None, orbit: tuple = None):
@@ -96,7 +96,7 @@ class Satellite:
         """
 
         if save_orbit:
-            print("Warning, it is not recommended to save orbit to JSON. Loading in the orbits from JSON causes errors"
+            print("Warning, it is not recommended to save orbit to JSON. Loading in the orbits from JSON causes errors "
                   "due to size")
 
         # If no filename is given, use satellite name as name
@@ -230,10 +230,13 @@ class Satellite:
         # If no period is given, set period to self.period
         if not period:
             period = self.period
-        # Initialize two-dimensional list
+
+        # Initialize two-dimensional list for orbit
         orbit = [[], []]
+
         # Generate a map of angular_positions for given period
         # Todo explain time interval
+
         angular_pos = map(self.angular_position_at_t(), range(int(period / self.time_interval) + 1))
         # For each angular position, generate x,y coordinates, append coordinates to orbit
         for angle in angular_pos:
