@@ -40,7 +40,7 @@ if __name__ == '__main__':
     print(moon)
     # A gap shows up if you calculate per day, to avoid this the the moon is plotted over twice its period.
     orbit = moon.calculate_orbit(moon.period * 2)
-    moon.to_json('json\Luna')
+    moon.to_json('json/Luna')
 
     # If you are calculating the orbits yourself, comment the 4 following lines
     # For per day:
