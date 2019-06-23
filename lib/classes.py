@@ -1,5 +1,5 @@
 from math import cos, sin
-from lib.utility import gravitational_constant, pi, radians, range_setter
+from lib.utility import gravitational_constant, pi, range_setter
 import json
 from functools import lru_cache
 
@@ -208,7 +208,7 @@ class Satellite:
         O(t) = wt
         """
         # Todo explain time interval
-        return lambda t: round(range_setter(self.angular_velocity * t * self.time_interval, radians(360)),
+        return lambda t: round(range_setter(self.angular_velocity * t * self.time_interval, 6.283185307180001),
                                self.accuracy)
 
     @lru_cache(maxsize=None)
