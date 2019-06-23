@@ -63,7 +63,7 @@ class Satellite:
         :param radius: float
         :param velocity: float
         :param period: float
-        :param angular_velocity:
+        :param angular_velocity: float
         :param orbit: list
         :param name: str
         :param mass: float
