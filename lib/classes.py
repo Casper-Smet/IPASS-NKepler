@@ -95,10 +95,6 @@ class Satellite:
         :param filename: str
         """
 
-        if save_orbit:
-            print("Warning, it is not recommended to save orbit to JSON. Loading in the orbits from JSON causes errors "
-                  "due to size")
-
         # If no filename is given, use satellite name as name
         if not filename:
             filename = self.name
@@ -119,6 +115,8 @@ class Satellite:
         data['orbit']['coordinates'] = dict()
         # If an orbit has been calculated and the user wants to save orbit, save orbit to JSON
         if self.orbit and save_orbit:
+            print("Warning, it is not recommended to save orbit to JSON. Loading in the orbits from JSON causes errors "
+                  "due to size")
             data['orbit']['coordinates']['x'] = self.orbit[0]
             data['orbit']['coordinates']['y'] = self.orbit[1]
         else:
