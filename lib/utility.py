@@ -2,7 +2,6 @@ gravitational_constant = 6.67408 * 10 ** (-11)  # m^3/kgs^2
 pi = 3.14159265359
 
 
-
 def degrees(angle):
     """Converts radians to degrees"""
     try:
@@ -27,3 +26,23 @@ def range_setter(var, maximum):
     #     else:
     #         var -= maximum
     return var % maximum
+
+
+# define gcd function
+def gcd(x, y):
+    """This function implements the Euclidian algorithm
+    to find G.C.D. of two numbers"""
+
+    while (y):
+        x, y = y, x % y
+
+    return x
+
+
+# define lcm function
+def lcm(x, y):
+    """This function takes two
+    integers and returns the L.C.M."""
+
+    lcm = (x * y) // gcd(x, y)
+    return lcm

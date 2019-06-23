@@ -1,9 +1,9 @@
 from math import cos, sin
-from utility import gravitational_constant, pi, degrees, radians, range_setter
+from lib.utility import gravitational_constant, pi, radians, range_setter
 import json
 from functools import lru_cache
 
-
+# Todo add warning: orbits not recommended to save. Might not be loadable.
 # Todo bug fix time = t to complete full orbit (Semi-done) Fixed itself?
 # Todo add position of focus as argument to angle_to_x, angle_to_y
 
@@ -91,8 +91,10 @@ class Satellite:
         Dumps satellite and focus data to JSON
         :param filename: str
         """
+        # If no filename is given, use satellite name as name
         if not filename:
             filename = self.name
+
         data = dict()
         data['name'] = self.name
         data['mass'] = self.mass
@@ -107,8 +109,9 @@ class Satellite:
         data['orbit']['time_interval'] = self.time_interval
         data['orbit']['accuracy'] = self.accuracy
         data['orbit']['coordinates'] = dict()
-        data['orbit']['coordinates']['x'] = self.orbit[0]
-        data['orbit']['coordinates']['y'] = self.orbit[1]
+        if self.orbit:
+            data['orbit']['coordinates']['x'] = self.orbit[0]
+            data['orbit']['coordinates']['y'] = self.orbit[1]
 
         with open(filename + '.json', 'w') as outfile:
             json.dump(data, outfile, indent=4)

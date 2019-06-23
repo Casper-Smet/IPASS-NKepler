@@ -1,4 +1,5 @@
-from math import pi, sin, cos, radians, sqrt
+from math import sin, cos, radians, sqrt
+from lib.utility import range_setter
 
 
 # Todo Add exceptions
@@ -23,27 +24,9 @@ def mean_anomaly(d, n, L, P):
 
     M = n * d + L - P
 
-    M = range_setter(M, 0, 360)
+    M = range_setter(M, 360)
 
     return M
-
-
-def true_anomaly(e):
-    """Calculated the true anomaly (v) using M and e:
-    M <-- mean anomaly
-    e <-- eccentricity
-    DOES NOT WORK (WIP)"""
-
-    return lambda M: M + 180 / pi * ((2 * e - e ** 0.75) * sin_r(M)
-                                     + 1.25 * e ** 2 * sin_r(2 * M)
-                                     + 13 / 12 * e ** 3 * sin_r(3 * M))
-
-    # return lambda M: M + 180 / pi * ((2 * e - e ** 0.75) * sin(M)
-    #                                      + 1.25 * e ** 2 * sin(2 * M)
-    #                                      + 13 / 12 * e ** 3 * sin(3 * M))
-
-
-
 
 
 def radius_vector(a, e, v):

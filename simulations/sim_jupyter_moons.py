@@ -1,4 +1,4 @@
-from classes import Focus, Satellite, json_satellite_construct
+from lib.classes import Focus, Satellite
 import matplotlib;
 
 matplotlib.use("TkAgg")
