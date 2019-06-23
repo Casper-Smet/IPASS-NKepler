@@ -7,13 +7,13 @@ from functools import lru_cache
 # Todo decide on whether or not to save orbits
 # Todo bug fix time = t to complete full orbit (Semi-done) Fixed itself?
 # Todo add position of focus as argument to angle_to_x, angle_to_y
+# TODO add docstring to Focus
 
 class Focus:
     """Object around which satellite will  orbit"""
     name = ""
     mass = 0.0
     radius = 0.0
-    satellite_list = list()
 
     def __init__(self, name: str, mass: float, radius: float = 0.0):
         """Initializer for Focus
@@ -25,10 +25,14 @@ class Focus:
             self.name = str(name)
             self.mass = float(mass)
             self.radius = float(radius)
+            self.satellite_list = list()
         except ValueError as e:
             print("An unaccepted variable type was entered, Focus requires Str, Float, Float\n", e)
 
     def add_to_satellites(self, satellite: object):
+        if type(satellite) != Satellite:
+            raise TypeError
+
         self.satellite_list.append(satellite)
 
     def largest_radius(self):
