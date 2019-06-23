@@ -10,8 +10,11 @@
     "period": 929671036.3453449,
     "angular_velocity": 6.758503880985689e-09,
     "orbit": {
-        "time_interval": 86400,
+        "time_interval": 2628000.0,
         "accuracy": 2,
-        "coordinates": {}
+        "coordinates": {
+            "x": [],
+            "y": []
+        }
     }
 }

@@ -12,6 +12,9 @@
     "orbit": {
         "time_interval": 3600,
         "accuracy": 2,
-        "coordinates": {}
+        "coordinates": {
+            "x": [],
+            "y": []
+        }
     }
 }
