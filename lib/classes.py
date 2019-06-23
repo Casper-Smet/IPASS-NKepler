@@ -4,7 +4,6 @@ import json
 from functools import lru_cache
 
 
-# Todo optimization with lru_cache
 # Todo decide on whether or not to save orbits
 # Todo bug fix time = t to complete full orbit (Semi-done) Fixed itself?
 # Todo add position of focus as argument to angle_to_x, angle_to_y
@@ -182,7 +181,6 @@ class Satellite:
 
         return self.angular_velocity
 
-    @lru_cache(maxsize=None)
     def angle_to_x(self, angle: float) -> float:
         """
         Calculates x coordinate using the following formula:
@@ -193,7 +191,6 @@ class Satellite:
         """
         return cos(angle) * self.radius
 
-    @lru_cache(maxsize=None)
     def angle_to_y(self, angle: float) -> float:
         """
         Calculates y coordinate using the following formula:
@@ -212,6 +209,7 @@ class Satellite:
         return lambda t: round(range_setter(self.angular_velocity * t * self.time_interval, radians(360)),
                                self.accuracy)
 
+    @lru_cache(maxsize=None)
     def angular_position_to_coordinates(self, angular_position: float) -> tuple:
         """
         Calculates X,Y coordinates with angular position. Calls angle_to_y and angle_to_x
