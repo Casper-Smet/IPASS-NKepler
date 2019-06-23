@@ -2,7 +2,6 @@ gravitational_constant = 6.67408 * 10 ** (-11)  # m^3/kgs^2
 pi = 3.14159265359
 
 
-
 def degrees(angle: float) -> float:
     """Converts radians to degrees
     :rtype: float
