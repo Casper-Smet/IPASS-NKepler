@@ -33,7 +33,7 @@ def radians(angle: float) -> float:
         return 0.0
 
 
-def range_setter(var, maximum):
+def range_setter(var: float, maximum: float):
     """Alters var to 0 >= var <= maximum
     :param maximum: float
     :return: float
