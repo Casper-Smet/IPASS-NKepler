@@ -1,25 +1,53 @@
 gravitational_constant = 6.67408 * 10 ** (-11)  # m^3/kgs^2
 pi = 3.14159265359
 
-# Todo better docstrings
-# Todo better exceptions
 
-def degrees(angle):
-    """Converts radians to degrees"""
+
+def degrees(angle: float) -> float:
+    """Converts radians to degrees
+    :rtype: float
+    :param angle: float
+    :return angle in degrees: float
+    """
+    if type(angle) not in [int, float]:
+        print("Please input correct type for angle")
+        raise TypeError
     try:
         return angle * 180 / pi
     except Exception as e:
         print(e)
+        return 0.0
 
 
-def radians(angle):
-    """Converts degrees to radians"""
+def radians(angle: float) -> float:
+    """Converts degrees to radians
+    :rtype: float
+    :param angle: float
+    :return angle in radians: float
+    """
+    if type(angle) not in [int, float]:
+        raise TypeError
     try:
         return angle * pi / 180
     except Exception as e:
         print(e)
+        return 0.0
 
 
 def range_setter(var, maximum):
-    """Alters var to be within two given values, used in mean_anomaly()"""
-    return var % maximum
+    """Alters var to 0 >= var <= maximum
+    :param maximum: float
+    :return: float
+    :type var: float
+    """
+    if type(var) not in [int, float]:
+        print("Please input correct type for var")
+        raise TypeError
+    if type(maximum) not in [int, float]:
+        print("Please input correct type for maximum")
+        raise TypeError
+    try:
+        return var % maximum
+    except Exception as e:
+        print(e)
+        return 0.0
