@@ -2,9 +2,8 @@ from math import sin, cos, radians, sqrt
 from lib.utility import range_setter
 
 
+# Todo decide on removal
 # Todo Add exceptions
-# Todo modulo in range_setter?
-# Todo True anomaly calculation: (eccentric anomaly?)
 # Todo Add returns to docstrings
 
 def sin_r(angle):
@@ -73,9 +72,6 @@ def main():
     P_mars = 336.0882
     M_mars = mean_anomaly(d_mars, n_mars, L_mars, P_mars)
     e_mars = 0.0934231
-    v_equation_mars = true_anomaly(e_mars)
-    v_mars = v_equation_mars(M_mars)
-    print(v_mars)
     a_mars = 1.5236365
     v_mars = 244.921657
 

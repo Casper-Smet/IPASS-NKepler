@@ -3,7 +3,10 @@ from lib.utility import gravitational_constant, pi, radians, range_setter
 import json
 from functools import lru_cache
 
-# Todo add warning: orbits not recommended to save. Might not be loadable.
+
+# Todo optimization with lru_cache
+# Todo decide on whether or not to save orbits
+# Todo add warning: orbits not recommended to save. Might not be loadable. (size)
 # Todo bug fix time = t to complete full orbit (Semi-done) Fixed itself?
 # Todo add position of focus as argument to angle_to_x, angle_to_y
 
@@ -38,6 +41,7 @@ class Focus:
 class Satellite:
     """Satellite that will orbit"""
 
+    # Todo uncomment, variable expectation annotation?
     # # Variables independent from Focus
     # name: str = ""
     # mass: float = 0.0
@@ -86,11 +90,14 @@ class Satellite:
         except TypeError as e:
             print("An unaccepted variable type was entered, Satellite requires Str, Float\n", e)
 
-    def to_json(self, filename: str = None):
+    def to_json(self, filename: str = None, save_orbit: bool = False):
         """
         Dumps satellite and focus data to JSON
         :param filename: str
         """
+
+
+
         # If no filename is given, use satellite name as name
         if not filename:
             filename = self.name
@@ -109,9 +116,13 @@ class Satellite:
         data['orbit']['time_interval'] = self.time_interval
         data['orbit']['accuracy'] = self.accuracy
         data['orbit']['coordinates'] = dict()
-        if self.orbit:
+        # If an orbit has been calculated, save orbit to JSON
+        if self.orbit and save_orbit:
             data['orbit']['coordinates']['x'] = self.orbit[0]
             data['orbit']['coordinates']['y'] = self.orbit[1]
+        else:
+            data['orbit']['coordinates']['x'] = []
+            data['orbit']['coordinates']['y'] = []
 
         with open(filename + '.json', 'w') as outfile:
             json.dump(data, outfile, indent=4)

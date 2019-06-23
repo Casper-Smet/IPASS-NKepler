@@ -1,6 +1,8 @@
 gravitational_constant = 6.67408 * 10 ** (-11)  # m^3/kgs^2
 pi = 3.14159265359
 
+# Todo better docstrings
+# Todo better exceptions
 
 def degrees(angle):
     """Converts radians to degrees"""
@@ -20,29 +22,4 @@ def radians(angle):
 
 def range_setter(var, maximum):
     """Alters var to be within two given values, used in mean_anomaly()"""
-    # while var > maximum or var < minimum:
-    #     if var < minimum:
-    #         var += maximum
-    #     else:
-    #         var -= maximum
     return var % maximum
-
-
-# define gcd function
-def gcd(x, y):
-    """This function implements the Euclidian algorithm
-    to find G.C.D. of two numbers"""
-
-    while (y):
-        x, y = y, x % y
-
-    return x
-
-
-# define lcm function
-def lcm(x, y):
-    """This function takes two
-    integers and returns the L.C.M."""
-
-    lcm = (x * y) // gcd(x, y)
-    return lcm
