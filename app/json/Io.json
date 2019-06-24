@@ -2,7 +2,7 @@
     "name": "Io",
     "mass": 8.9e+22,
     "focus": {
-        "name": "Jupyter",
+        "name": "jupiter",
         "mass": 1.9e+27
     },
     "radius": 423622000.0,

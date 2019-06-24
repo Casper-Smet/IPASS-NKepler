@@ -15,6 +15,14 @@ def animate(i):
     for satellite in focus.satellite_list:
         ang_pos = lambda_dict[satellite.name](i)
         x, y = satellite.angular_position_to_coordinates(ang_pos)
+        plt.plot(trail_dict[satellite.name][0], trail_dict[satellite.name][1])
+
+        trail_dict[satellite.name][0].append(x)
+        trail_dict[satellite.name][1].append(y)
+
+        if len(trail_dict[satellite.name][0]) > trail_size:
+            trail_dict[satellite.name][0].pop(0)
+            trail_dict[satellite.name][1].pop(0)
 
         ax1.scatter(x, y, label=satellite.name)
         # ax1.plot([x, 0], [y, 0], label="{} Radius: {}".format(satellite.name, (x ** 2 + y ** 2) ** (1 / 2)))
@@ -34,27 +42,31 @@ def calculate_orbit_system(focus):
         print(sat)
 
     lambda_dict = dict()
+    trail_dict = dict()
 
     for sat in satellites:
         lambda_dict[sat.name] = sat.angular_position_at_t()
+        trail_dict[sat.name] = [[], []]
         # sat.calculate_orbit()  # Uncomment to calculate orbit
-        # sat.to_json("json/{}".format(sat.name))  # Uncomment to save to JSON, add True to save orbit
-    return lambda_dict
+        sat.to_json("json/{}".format(sat.name))  # Uncomment to save to JSON, add True to save orbit
+    return lambda_dict, trail_dict
 
 
 if __name__ == '__main__':
-    focus = Focus("Jupyter", 1900E24)
+    focus = Focus("jupiter", 1900E24)
 
     io = Satellite("Io", 0.089E24, focus, 421.8E6 + 1.822E6)
     europa = Satellite("Europa", 0.048E24, focus, 670.9E6 + 1.568E6)
     ganymede = Satellite("Ganymede", 0.148E6, focus, 1070E6 + 2.631E6)
     callisto = Satellite("Callisto", 0.1076E24, focus, 1883E6 + 2.410E6)
 
-    lambda_dict = calculate_orbit_system(focus)
+    lambda_dict, trail_dict = calculate_orbit_system(focus)
 
     periods = [x.period for x in focus.satellite_list]
 
     axis_range = focus.largest_radius()
+
+    trail_size = 20
 
     fig = plt.figure(figsize=(10, 6))
     ax1 = fig.add_subplot(1, 1, 1)
@@ -63,7 +75,7 @@ if __name__ == '__main__':
 
     ani = animation.FuncAnimation(fig, animate, interval=1, frames=int(max(periods) / Satellite.time_interval))
 
-    plt.show()
+    # plt.show()
 
     # Uncomment the following line to save as GIF, make sure you've got imagemagick installed
-    # ani.save("orbits/jupyter.gif", writer='imagemagick', fps=30)
+    ani.save("orbits/jupiter.gif", writer='imagemagick', fps=30)

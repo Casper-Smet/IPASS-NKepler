@@ -2,7 +2,7 @@
     "name": "Europa",
     "mass": 4.8e+22,
     "focus": {
-        "name": "Jupyter",
+        "name": "jupiter",
         "mass": 1.9e+27
     },
     "radius": 672468000.0,

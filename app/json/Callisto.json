@@ -2,7 +2,7 @@
     "name": "Callisto",
     "mass": 1.076e+23,
     "focus": {
-        "name": "Jupyter",
+        "name": "jupiter",
         "mass": 1.9e+27
     },
     "radius": 1885410000.0,
