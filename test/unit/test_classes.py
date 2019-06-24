@@ -2,8 +2,6 @@ import unittest
 from lib.classes import Satellite, Focus
 
 
-# TODO test angular_velocity (too small?)
-# TODO test orbit (too many values?)
 class TestSatellite(unittest.TestCase):
 
     def setUp(self) -> None:
@@ -53,6 +51,83 @@ class TestSatellite(unittest.TestCase):
 
         self.assertAlmostEqual(self.sat_3.calculate_period(), 19410829.74, places=2)
         self.assertAlmostEqual(self.sat_3.period, 19410829.74, places=2)
+
+    def test_calculate_angular_velocity(self):
+        self.assertAlmostEqual(self.sat_1.calculate_angular_velocity() * 10 ** 10, 26489.91, places=2)
+        self.assertAlmostEqual(self.sat_1.angular_velocity * 10 ** 10, 26489.91, places=2)
+
+        self.assertAlmostEqual(self.sat_2.calculate_angular_velocity() * 10 ** 10, 8269.28, places=2)
+        self.assertAlmostEqual(self.sat_2.angular_velocity * 10 ** 10, 8269.28, places=2)
+
+        self.assertAlmostEqual(self.sat_3.calculate_angular_velocity() * 10 ** 10, 3236.95, places=2)
+        self.assertAlmostEqual(self.sat_3.angular_velocity * 10 ** 10, 3236.95, places=2)
+
+    def test_calculate_orbit(self):
+        # TODO test orbit (too many values?) first last, 90 degree angles?
+        pass
+
+    def test_angle_to_y(self):
+        self.assertAlmostEqual(self.sat_1.angle_to_y(1.0472), 332900635.872, places=2)
+
+        self.assertAlmostEqual(self.sat_2.angle_to_y(6.2832), 850750.15, places=2)
+
+        self.assertAlmostEqual(self.sat_3.angle_to_y(-2), -98391484650.57, places=2)
+
+        with self.assertRaises(TypeError):
+            self.sat_1.angle_to_y([])
+            self.sat_2.angle_to_y(())
+            self.sat_3.angle_to_y(1j)
+            self.sat_1.angle_to_y("Test")
+
+    def test_angle_to_x(self):
+        self.assertAlmostEqual(self.sat_1.angle_to_x(1.0472), 192199184.79, places=2)
+
+        self.assertAlmostEqual(self.sat_2.angle_to_x(6.2832), 57902439993.75, places=2)
+
+        self.assertAlmostEqual(self.sat_3.angle_to_x(-2), -45029606235.06, places=2)
+
+        with self.assertRaises(TypeError):
+            self.sat_1.angle_to_x([])
+            self.sat_2.angle_to_x(())
+            self.sat_3.angle_to_x(1j)
+            self.sat_1.angle_to_x("Test")
+
+    def test_angular_position_at_t(self):
+        sat_1_lambda = self.sat_1.angular_position_at_t()
+        self.assertAlmostEqual(sat_1_lambda(600), 5.72, places=2)
+
+        sat_2_lambda = self.sat_2.angular_position_at_t()
+        self.assertAlmostEqual(sat_2_lambda(8970), 1.57, places=2)
+
+        sat_3_lambda = self.sat_3.angular_position_at_t()
+        self.assertAlmostEqual(sat_3_lambda(23), 0.03, places=2)
+
+    def test_angular_position_to_coordinates(self):
+        x, y = self.sat_1.angular_position_to_coordinates(1.0472)
+        self.assertAlmostEqual(x, 192199184.79, places=2)
+        self.assertAlmostEqual(y, 332900635.872, places=2)
+
+        x, y = self.sat_2.angular_position_to_coordinates(6.2832)
+        self.assertAlmostEqual(x, 57902439993.75, places=2)
+        self.assertAlmostEqual(y, 850750.15, places=2)
+
+        x, y = self.sat_3.angular_position_to_coordinates(-2)
+        self.assertAlmostEqual(x, -45029606235.06, places=2)
+        self.assertAlmostEqual(y, -98391484650.57, places=2)
+
+        with self.assertRaises(TypeError):
+            self.sat_1.angular_position_to_coordinates([])
+            self.sat_2.angular_position_to_coordinates(())
+            self.sat_3.angular_position_to_coordinates(1j)
+            self.sat_3.angular_position_to_coordinates("test")
+
+    def test_json_satellite_construct(self):
+        # TODO Test json_satellite construct
+        pass
+
+    def test_to_json(self):
+        # TODO test to_json
+        pass
 
 
 class TestFocus(unittest.TestCase):
