@@ -121,14 +121,6 @@ class TestSatellite(unittest.TestCase):
             self.sat_3.angular_position_to_coordinates(1j)
             self.sat_3.angular_position_to_coordinates("test")
 
-    def test_json_satellite_construct(self):
-        # TODO Test json_satellite construct
-        pass
-
-    def test_to_json(self):
-        # TODO test to_json
-        pass
-
 
 class TestFocus(unittest.TestCase):
     def setUp(self) -> None:
