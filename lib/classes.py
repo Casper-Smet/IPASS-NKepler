@@ -216,7 +216,7 @@ class Satellite:
         Returns lambda that calculates angular position at time index t.
         O(t) = wt
         """
-        # Todo explain time interval
+        # Time interval is the amount of time that passes per t in seconds
         return lambda t: round(range_setter(self.angular_velocity * t * self.time_interval, 6.283185307180001),
                                self.accuracy)
 
@@ -246,7 +246,8 @@ class Satellite:
         orbit = [[], []]
 
         # Generate a map of angular_positions for given period
-        # Todo explain time interval
+
+        # Time interval is the amount of time that passes per t in seconds
 
         angular_pos = map(self.angular_position_at_t(), range(int(period / self.time_interval) + 1))
         # For each angular position, generate x,y coordinates, append coordinates to orbit
