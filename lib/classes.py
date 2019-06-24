@@ -4,10 +4,7 @@ import json
 from functools import lru_cache
 
 
-# Todo decide on whether or not to save orbits
-# Todo bug fix time = t to complete full orbit (Semi-done) Fixed itself?
 # Todo add position of focus as argument to angle_to_x, angle_to_y
-# TODO add docstring to Focus
 
 class Focus:
     """Object around which satellite will  orbit"""
@@ -30,31 +27,43 @@ class Focus:
             print("An unaccepted variable type was entered, Focus requires Str, Float, Float\n", e)
 
     def add_to_satellites(self, satellite: object):
+        """
+        Adds satellite to satellite_list
+        :param satellite:
+        """
         if type(satellite) != Satellite:
             raise TypeError
 
         self.satellite_list.append(satellite)
 
-    def largest_radius(self):
-        radii = [x.radius for x in self.satellite_list]
-        return max(radii)
+    def largest_radius(self) -> float:
+        """
+        Returns the value of the biggest radius in satellite_list
+        :rtype: float
+        :return biggest radius:
+        """
+        if self.satellite_list:
+            radii = [x.radius for x in self.satellite_list]
+            return max(radii)
+        else:
+            print("Satellite_list is empty")
+            return 0.0
 
 
 class Satellite:
     """Satellite that will orbit"""
 
-    # Todo uncomment, variable expectation annotation?
-    # # Variables independent from Focus
-    # name: str = ""
-    # mass: float = 0.0
-    #
-    # # Variables dependent on Focus
-    # focus = None
-    # radius: float = 0.0
-    # # Calculated variables
-    # velocity: float = 0.0
-    # period: float = 0.0
-    # angular_velocity: float = 0.0
+    # Variables independent from Focus
+    name: str
+    mass: float
+
+    # Variables dependent on Focus
+    focus: Focus
+    radius: float
+    # Calculated variables
+    velocity: float
+    period: float
+    angular_velocity: float
 
     accuracy: int = 2
     time_interval: int = 1 * 60 * 60  # step size for t in seconds. Base position is 3600 (1 hour)
