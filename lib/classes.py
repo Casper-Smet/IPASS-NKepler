@@ -200,6 +200,9 @@ class Satellite:
         :param angle: float radians
         :return: x-coordinate
         """
+        if type(angle) not in [int, float]:
+            raise TypeError
+
         return cos(angle) * self.radius
 
     def angle_to_y(self, angle: float) -> float:
@@ -209,6 +212,8 @@ class Satellite:
         :param angle: float radians
         :return: y-coordinate
         """
+        if type(angle) not in [int, float]:
+            raise TypeError
         return sin(angle) * self.radius
 
     def angular_position_at_t(self):
