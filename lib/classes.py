@@ -255,8 +255,12 @@ class Satellite:
         # TODO docstrings
         # TODO exceptions
         # TODO non-static middle_point
+        if type(coordinates) not in [list, tuple]:
+            raise TypeError
+
         middle_point = [0, 0]
-        return atan2(middle_point[1] - coordinates[1], middle_point[0] - coordinates[0])
+        return range_setter(atan2(coordinates[1] - middle_point[1], coordinates[0] - middle_point[0]),
+                            6.283185307180001)
 
     def angular_position_at_t(self, from_known: bool = False):
         """
@@ -277,7 +281,7 @@ class Satellite:
         # TODO docstrings
         if type(angular_position) not in [float, int]:
             raise TypeError
-        return range_setter(angular_position, 6.283185307180001) / self.angular_velocity
+        return angular_position / self.angular_velocity
 
     @lru_cache(maxsize=None)
     def angular_position_to_coordinates(self, angular_position: float) -> tuple:
