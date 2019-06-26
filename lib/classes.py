@@ -1,5 +1,6 @@
-from math import cos, sin, acos, asin, atan2
+from math import cos, sin, atan2
 from lib.utility import gravitational_constant, pi, range_setter
+from datetime import datetime as dt
 import json
 from functools import lru_cache
 
@@ -94,6 +95,7 @@ class Satellite:
 
     # Date related variables
     known_date_s: float
+    known_date_dt: dt
     # known_coordinates: list
     # known_angular_position: float
 
@@ -101,7 +103,8 @@ class Satellite:
     time_interval: int = 1 * 60 * 60  # step size for t in seconds. Base position is 3600 (1 hour)
 
     def __init__(self, name: str, mass: float, focus: Focus = None, radius: float = None, velocity: float = None,
-                 period: float = None, angular_velocity: float = None, known_date_s: float = None, orbit: tuple = None):
+                 period: float = None, angular_velocity: float = None, known_date_s: float = None,
+                 known_date_dt: dt = None, orbit: tuple = None):
         """
         Initializer for Satellite
         :param focus: Focus
@@ -131,47 +134,10 @@ class Satellite:
             self.orbit = orbit
             # Date related variables
             self.known_date_s = known_date_s
+            self.known_date_dt = known_date_dt
 
         except TypeError as e:
             print("An unaccepted variable type was entered, Satellite requires Str, Float\n", e)
-
-    def to_json(self, filename: str = None, save_orbit: bool = False):
-        """
-        Dumps satellite and focus data to JSON
-        :param save_orbit: bool
-        :param filename: str
-        """
-
-        # If no filename is given, use satellite name as name
-        if not filename:
-            filename = self.name
-
-        data = dict()
-        data['name'] = self.name
-        data['mass'] = self.mass
-        data['focus'] = dict()
-        data['focus']['name'] = self.focus.name
-        data['focus']['mass'] = self.focus.mass
-        data['radius'] = self.radius
-        data['velocity'] = self.velocity
-        data['period'] = self.period
-        data['angular_velocity'] = self.angular_velocity
-        data['orbit'] = dict()
-        data['orbit']['time_interval'] = self.time_interval
-        data['orbit']['accuracy'] = self.accuracy
-        data['orbit']['coordinates'] = dict()
-        # If an orbit has been calculated and the user wants to save orbit, save orbit to JSON
-        if self.orbit and save_orbit:
-            print("Warning, it is not recommended to save orbit to JSON. Loading in the orbits from JSON causes errors "
-                  "due to size")
-            data['orbit']['coordinates']['x'] = self.orbit[0]
-            data['orbit']['coordinates']['y'] = self.orbit[1]
-        else:
-            data['orbit']['coordinates']['x'] = []
-            data['orbit']['coordinates']['y'] = []
-
-        with open(filename + '.json', 'w') as outfile:
-            json.dump(data, outfile, indent=4)
 
     def set_focus(self, focus: Focus, radius: float):
         """
@@ -183,6 +149,17 @@ class Satellite:
         self.focus = focus
         focus.add_to_satellites(self)
         self.radius = radius
+
+    def set_origin(self, known_date_dt: dt, coordinates: list):
+        # TODO docstrings
+        # TODO exceptions
+        self.known_date_dt = known_date_dt
+        self.calculate_t_for_position(coordinates, True)
+        print(f"{self.known_date_dt} equals {self.known_date_s}")
+        pass
+
+    def update_origin(self, updated_date: dt):
+        pass
 
     def calculate_velocity(self) -> float:
         """
@@ -330,6 +307,44 @@ class Satellite:
             orbit[1].append(y)
         self.orbit = orbit
         return orbit
+
+    def to_json(self, filename: str = None, save_orbit: bool = False):
+        """
+        Dumps satellite and focus data to JSON
+        :param save_orbit: bool
+        :param filename: str
+        """
+
+        # If no filename is given, use satellite name as name
+        if not filename:
+            filename = self.name
+
+        data = dict()
+        data['name'] = self.name
+        data['mass'] = self.mass
+        data['focus'] = dict()
+        data['focus']['name'] = self.focus.name
+        data['focus']['mass'] = self.focus.mass
+        data['radius'] = self.radius
+        data['velocity'] = self.velocity
+        data['period'] = self.period
+        data['angular_velocity'] = self.angular_velocity
+        data['orbit'] = dict()
+        data['orbit']['time_interval'] = self.time_interval
+        data['orbit']['accuracy'] = self.accuracy
+        data['orbit']['coordinates'] = dict()
+        # If an orbit has been calculated and the user wants to save orbit, save orbit to JSON
+        if self.orbit and save_orbit:
+            print("Warning, it is not recommended to save orbit to JSON. Loading in the orbits from JSON causes errors "
+                  "due to size")
+            data['orbit']['coordinates']['x'] = self.orbit[0]
+            data['orbit']['coordinates']['y'] = self.orbit[1]
+        else:
+            data['orbit']['coordinates']['x'] = []
+            data['orbit']['coordinates']['y'] = []
+
+        with open(filename + '.json', 'w') as outfile:
+            json.dump(data, outfile, indent=4)
 
     def __str__(self) -> str:
         return "Name: {}, Mass: {}, Radius: {}, Period: {} Focus: {}, Velocity: {}, Angular Velocity: {}".format(
