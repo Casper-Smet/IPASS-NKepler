@@ -251,6 +251,13 @@ class Satellite:
             raise TypeError
         return sin(angle) * self.radius
 
+    def coordinates_to_angle(self, coordinates: list):
+        # TODO docstrings
+        # TODO exceptions
+        # TODO non-static middle_point
+        middle_point = [0, 0]
+        return atan2(middle_point[1] - coordinates[1], middle_point[0] - coordinates[0])
+
     def angular_position_at_t(self, from_known: bool = False):
         """
         Returns lambda that calculates angular position at time index t.
@@ -266,6 +273,12 @@ class Satellite:
             return lambda t: round(
                 range_setter(self.angular_velocity * t * self.time_interval, 6.283185307180001), self.accuracy)
 
+    def t_from_angular_position(self, angular_position: float) -> float:
+        # TODO docstrings
+        if type(angular_position) not in [float, int]:
+            raise TypeError
+        return range_setter(angular_position, 6.283185307180001) / self.angular_velocity
+
     @lru_cache(maxsize=None)
     def angular_position_to_coordinates(self, angular_position: float) -> tuple:
         """
@@ -277,6 +290,15 @@ class Satellite:
         x = self.angle_to_x(angular_position)
         y = self.angle_to_y(angular_position)
         return x, y
+
+    def calculate_t_for_position(self, coordinates: list, save: bool = False) -> float:
+        # TODO docstrings
+        # TODO exceptions
+        angular_position = self.coordinates_to_angle(coordinates)
+        t = self.t_from_angular_position(angular_position)
+        if save:
+            self.known_date_s = t
+        return t
 
     def calculate_orbit(self, period: float = None, from_known: bool = False) -> list:
         """
@@ -304,28 +326,6 @@ class Satellite:
             orbit[1].append(y)
         self.orbit = orbit
         return orbit
-
-    def coordinates_to_angle(self, coordinates: list):
-        # TODO docstrings
-        # TODO exceptions
-        # TODO non-static middle_point
-        middle_point = [0, 0]
-        return atan2(middle_point[1] - coordinates[1], middle_point[0] - coordinates[0])
-
-    def t_from_angular_position(self, angular_position: float) -> float:
-        # TODO docstrings
-        if type(angular_position) not in [float, int]:
-            raise TypeError
-        return range_setter(angular_position, 6.283185307180001) / self.angular_velocity
-
-    def calculate_t_for_position(self, coordinates: list, save: bool = False) -> float:
-        # TODO docstrings
-        # TODO exceptions
-        angular_position = self.coordinates_to_angle(coordinates)
-        t = self.t_from_angular_position(angular_position)
-        if save:
-            self.known_date_s = t
-        return t
 
     def __str__(self) -> str:
         return "Name: {}, Mass: {}, Radius: {}, Period: {} Focus: {}, Velocity: {}, Angular Velocity: {}".format(
