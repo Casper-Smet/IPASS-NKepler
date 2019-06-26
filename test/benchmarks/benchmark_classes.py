@@ -8,12 +8,13 @@ import matplotlib.pyplot as plt
 def calculate_orbit_system(focus):
     satellites = focus.satellite_list
     for sat in satellites:
-        sat.time_interval = 1 * 60   # hours recommended for inner planets
+        sat.time_interval = 1 * 60   # minutes
         sat.calculate_velocity()
         sat.calculate_period()
         sat.calculate_angular_velocity()
         sat.calculate_orbit()
-        # plt.plot(sat.orbit[0], sat.orbit[1])
+        for i in range(10, 100):
+            sat.calculate_t_for_position([sat.orbit[0][i], sat.orbit[1][i]])
 
 if __name__ == '__main__':
     cp = cProfile.Profile()
@@ -25,6 +26,6 @@ if __name__ == '__main__':
     mars = Satellite("Mars", 0.642E24, sun, 0.228E12 + 3.390E6)
     calculate_orbit_system(sun)
     cp.disable()
-    print("Orbits calculated per hour, one full orbit per satellite")
+    print("Orbits calculated per minute, one full orbit per satellite")
     cp.print_stats()
     plt.show()
