@@ -1,3 +1,5 @@
+from datetime import datetime as dt
+
 gravitational_constant = 6.67408 * 10 ** (-11)  # m^3/kgs^2
 pi = 3.14159265359
 
@@ -50,3 +52,9 @@ def range_setter(var: float, maximum: float):
     except Exception as e:
         print(e)
         return 0.0
+
+
+def time_difference(date1: dt, date2: dt):
+    # TODO Docstrings
+    # TODO exceptions
+    return (date2 - date1).total_seconds()
