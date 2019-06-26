@@ -1,7 +1,7 @@
 import cProfile
 from lib.classes import *
 import matplotlib.pyplot as plt
-
+# TODO add origin functions
 
 # Profiled per day
 

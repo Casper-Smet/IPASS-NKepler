@@ -1,6 +1,7 @@
 import unittest
 from lib.classes import Satellite, Focus
 
+# TODO add origin functions
 
 class TestSatellite(unittest.TestCase):
 
@@ -93,13 +94,13 @@ class TestSatellite(unittest.TestCase):
             self.sat_1.angle_to_x("Test")
 
     def test_coordinates_to_angle(self):
-        self.assertAlmostEqual(self.sat_1.coordinates_to_angle(self.sat_1.angular_position_to_coordinates(1.0472)),
+        self.assertAlmostEqual(self.sat_1.coordinates_to_angle(self.sat_1.angular_displacement_to_coordinates(1.0472)),
                                1.0472, places=2)
 
-        self.assertAlmostEqual(self.sat_2.coordinates_to_angle(self.sat_2.angular_position_to_coordinates(6.2832)),
+        self.assertAlmostEqual(self.sat_2.coordinates_to_angle(self.sat_2.angular_displacement_to_coordinates(6.2832)),
                                1.4692819998884943e-05, places=7)
 
-        self.assertAlmostEqual(self.sat_3.coordinates_to_angle(self.sat_3.angular_position_to_coordinates(-2)), 4.28,
+        self.assertAlmostEqual(self.sat_3.coordinates_to_angle(self.sat_3.angular_displacement_to_coordinates(-2)), 4.28,
                                places=2)
 
         with self.assertRaises(TypeError):
@@ -108,55 +109,55 @@ class TestSatellite(unittest.TestCase):
             self.sat_3.coordinates_to_angle(1.2)
             self.sat_3.coordinates_to_angle(1j)
 
-    def test_angular_position_at_t(self):
+    def test_angular_displacement_at_t(self):
         # TODO change lambda call
         # TODO add tests for 'true'
-        sat_1_lambda = self.sat_1.angular_position_at_t()
+        sat_1_lambda = self.sat_1.angular_displacement_at_t()
         self.assertAlmostEqual(sat_1_lambda(600), 5.72, places=2)
 
-        sat_2_lambda = self.sat_2.angular_position_at_t()
+        sat_2_lambda = self.sat_2.angular_displacement_at_t()
         self.assertAlmostEqual(sat_2_lambda(8970), 1.57, places=2)
 
-        sat_3_lambda = self.sat_3.angular_position_at_t()
+        sat_3_lambda = self.sat_3.angular_displacement_at_t()
         self.assertAlmostEqual(sat_3_lambda(23), 0.03, places=2)
 
-    def test_t_from_angular_position(self):
-        self.assertAlmostEqual(self.sat_1.t_from_angular_position(5.72) / Satellite.time_interval, 600, places=0)
-        self.assertAlmostEqual(self.sat_2.t_from_angular_position(1.57) / Satellite.time_interval, 527.39, places=0)
-        self.assertAlmostEqual(self.sat_3.t_from_angular_position(0.03) / Satellite.time_interval, 26, places=0)
+    def test_t_from_angular_displacement(self):
+        self.assertAlmostEqual(self.sat_1.t_from_angular_displacement(5.72) / Satellite.time_interval, 600, places=0)
+        self.assertAlmostEqual(self.sat_2.t_from_angular_displacement(1.57) / Satellite.time_interval, 527.39, places=0)
+        self.assertAlmostEqual(self.sat_3.t_from_angular_displacement(0.03) / Satellite.time_interval, 26, places=0)
 
         with self.assertRaises(TypeError):
-            self.sat_1.t_from_angular_position([])
-            self.sat_2.t_from_angular_position(())
-            self.sat_3.t_from_angular_position(1j)
-            self.sat_1.t_from_angular_position("Test")
+            self.sat_1.t_from_angular_displacement([])
+            self.sat_2.t_from_angular_displacement(())
+            self.sat_3.t_from_angular_displacement(1j)
+            self.sat_1.t_from_angular_displacement("Test")
 
-    def test_angular_position_to_coordinates(self):
-        x, y = self.sat_1.angular_position_to_coordinates(1.0472)
+    def test_angular_displacement_to_coordinates(self):
+        x, y = self.sat_1.angular_displacement_to_coordinates(1.0472)
         self.assertAlmostEqual(x, 192199184.79, places=2)
         self.assertAlmostEqual(y, 332900635.872, places=2)
 
-        x, y = self.sat_2.angular_position_to_coordinates(6.2832)
+        x, y = self.sat_2.angular_displacement_to_coordinates(6.2832)
         self.assertAlmostEqual(x, 57902439993.75, places=2)
         self.assertAlmostEqual(y, 850750.15, places=2)
 
-        x, y = self.sat_3.angular_position_to_coordinates(-2)
+        x, y = self.sat_3.angular_displacement_to_coordinates(-2)
         self.assertAlmostEqual(x, -45029606235.06, places=2)
         self.assertAlmostEqual(y, -98391484650.57, places=2)
 
         with self.assertRaises(TypeError):
-            self.sat_1.angular_position_to_coordinates([])
-            self.sat_2.angular_position_to_coordinates(())
-            self.sat_3.angular_position_to_coordinates(1j)
-            self.sat_3.angular_position_to_coordinates("test")
+            self.sat_1.angular_displacement_to_coordinates([])
+            self.sat_2.angular_displacement_to_coordinates(())
+            self.sat_3.angular_displacement_to_coordinates(1j)
+            self.sat_3.angular_displacement_to_coordinates("test")
 
     def test_calculate_t_for_position(self):
         self.assertAlmostEqual(self.sat_1.calculate_t_for_position(
-            self.sat_1.angular_position_to_coordinates(5.72)) / Satellite.time_interval, 600, places=0)
+            self.sat_1.angular_displacement_to_coordinates(5.72)) / Satellite.time_interval, 600, places=0)
         self.assertAlmostEqual(self.sat_2.calculate_t_for_position(
-            self.sat_2.angular_position_to_coordinates(1.57)) / Satellite.time_interval, 527.39, places=0)
+            self.sat_2.angular_displacement_to_coordinates(1.57)) / Satellite.time_interval, 527.39, places=0)
         self.assertAlmostEqual(self.sat_3.calculate_t_for_position(
-            self.sat_2.angular_position_to_coordinates(0.03)) / Satellite.time_interval, 26, places=0)
+            self.sat_2.angular_displacement_to_coordinates(0.03)) / Satellite.time_interval, 26, places=0)
 
         with self.assertRaises(TypeError):
             self.sat_1.calculate_t_for_position(5)

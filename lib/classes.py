@@ -7,15 +7,15 @@ from functools import lru_cache
 # TODO Add location at date; see plan below:
 """Plan: 
     1. Add date and possibly known position to initializer, make a separate setter for date + location (angular or 
-    euclidean coordinates?). 
-    2. Adding delta t to angular_position_at_t might be enough?
+    euclidean coordinates?). Done
+    2. Adding delta t to angular_displacement_at_t might be enough? Done
 Extra's:
-    1e. Add delta date calculator.
+    1e. Add delta date calculator. Done
 
 Things to figure out:
     1f. Data for planetary positions (T-SSAT?)
     2f. Static standard date, or different date for each different satellite. Non-static is most likely candidate, but
-    will be significantly harder to program. 
+    will be significantly harder to program. Done
 """
 # Todo add position of focus as argument to angle_to_x, angle_to_y; see plan below
 """Plan:
@@ -24,7 +24,7 @@ Things to figure out:
     2. Add satellite_list to Satellite
     2. Add optional 'current_focus_coordinates variable'.
         a. Either angle_to_x, angle_to_y
-        b. Angular_position_to_coordinates
+        b. angular_displacement_to_coordinates
         c. Conglomerate orbit function
 Extra's:
     1e. Add satellite of satellite to simulations
@@ -88,6 +88,7 @@ class Satellite:
     # Variables dependent on Focus
     focus: Focus
     radius: float
+    middle_point: list
     # Calculated variables
     velocity: float
     period: float
@@ -96,8 +97,6 @@ class Satellite:
     # Date related variables
     known_date_s: float
     known_date_dt: dt
-    # known_coordinates: list
-    # known_angular_position: float
 
     accuracy: int = 2
     time_interval: int = 1 * 60 * 60  # step size for t in seconds. Base position is 3600 (1 hour)
@@ -116,14 +115,16 @@ class Satellite:
         :param name: str
         :param mass: float
         """
+        # TODO EXCEPTIONS (including negative mass and radius)
         try:
             # Independent of focus
             self.name = name
             self.mass = mass
-            # Dependent of focus
+            # Dependent on focus
             self.focus = focus
             if focus:
                 focus.add_to_satellites(self)
+            self.middle_point = [0, 0]
             self.radius = radius
             #     Calculated from focus
             self.velocity = velocity
@@ -151,19 +152,41 @@ class Satellite:
         self.radius = radius
 
     def set_origin(self, known_date_dt: dt, coordinates: list):
-        # TODO docstrings
-        # TODO exceptions
+        """
+        Set an origin point for the Satellite's orbit. The known date is set to equal a relative value of t in seconds.
+        This value of t is the first moment the Satellite has reached those coordinates in one orbit.
+        :param known_date_dt: datetime
+        :param coordinates: list
+        """
+        if type(known_date_dt) != dt:
+            raise TypeError
+        if type(coordinates) not in [list, tuple]:
+            raise TypeError
+        if type(coordinates[0]) not in [int, float] or type(coordinates[1]) not in [int, float]:
+            raise TypeError
+        if len(coordinates) != 2:
+            raise ValueError
         self.known_date_dt = known_date_dt
         self.calculate_t_for_position(coordinates, True)
         print(f"{self.known_date_dt} equals {self.known_date_s}")
 
-    def update_origin(self, updated_date: dt):
-        # Earliest possible t where the satellite is in the same relative position
-        # TODO docstrings
-        # TODO exceptions
+    def update_origin(self, updated_date: dt) -> float:
+        """
+        Updates origin point for the satellite's orbit. Accepts a datetime object, then calculates the difference in
+        time between the entered date and known_date_dt. Next it calculates the angular displacement for that difference
+        in time. Finally finding the first moment of t in an orbit where the angular position equals the one calculated
+        earlier.
+        :param updated_date: datetime
+        :return known_date_s: float
+        """
+
+        if type(updated_date) != dt:
+            raise TypeError
         large_time = self.known_date_s + time_difference(self.known_date_dt, updated_date)
-        angular_position = self.angular_position_at_t()(large_time)
-        accurate_time = self.t_from_angular_position(angular_position)
+        angular_displacement = self.angular_displacement_at_t()(large_time)
+
+        # Earliest possible t where the satellite is in the same relative position
+        accurate_time = self.t_from_angular_displacement(angular_displacement)
         self.known_date_s = accurate_time
         self.known_date_dt = updated_date
         print(f"{self.known_date_dt} equals {self.known_date_s}")
@@ -237,17 +260,20 @@ class Satellite:
         return sin(angle) * self.radius
 
     def coordinates_to_angle(self, coordinates: list):
+        """
+        Calculates angular displacement with coordinates of the satellite and its focus using the following formula:
+        O = atan2(dx, dy)
+        :param coordinates:
+        :return angular displacement:
+        """
         # TODO docstrings
         # TODO exceptions
-        # TODO non-static middle_point
         if type(coordinates) not in [list, tuple]:
             raise TypeError
-
-        middle_point = [0, 0]
-        return range_setter(atan2(coordinates[1] - middle_point[1], coordinates[0] - middle_point[0]),
+        return range_setter(atan2(coordinates[1] - self.middle_point[1], coordinates[0] - self.middle_point[0]),
                             6.283185307180001)
 
-    def angular_position_at_t(self, from_known: bool = False):
+    def angular_displacement_at_t(self, from_known: bool = False):
         """
         Returns lambda that calculates angular position at time index t.
         O(t) = wt
@@ -262,29 +288,29 @@ class Satellite:
             return lambda t: round(
                 range_setter(self.angular_velocity * t * self.time_interval, 6.283185307180001), self.accuracy)
 
-    def t_from_angular_position(self, angular_position: float) -> float:
+    def t_from_angular_displacement(self, angular_displacement: float) -> float:
         # TODO docstrings
-        if type(angular_position) not in [float, int]:
+        if type(angular_displacement) not in [float, int]:
             raise TypeError
-        return angular_position / self.angular_velocity
+        return angular_displacement / self.angular_velocity
 
     @lru_cache(maxsize=None)
-    def angular_position_to_coordinates(self, angular_position: float) -> tuple:
+    def angular_displacement_to_coordinates(self, angular_displacement: float) -> tuple:
         """
         Calculates X,Y coordinates with angular position. Calls angle_to_y and angle_to_x
         :return: x,y
-        :param angular_position:
+        :param angular_displacement:
         :rtype: tuple
         """
-        x = self.angle_to_x(angular_position)
-        y = self.angle_to_y(angular_position)
+        x = self.angle_to_x(angular_displacement)
+        y = self.angle_to_y(angular_displacement)
         return x, y
 
     def calculate_t_for_position(self, coordinates: list, save: bool = False) -> float:
         # TODO docstrings
         # TODO exceptions
-        angular_position = self.coordinates_to_angle(coordinates)
-        t = self.t_from_angular_position(angular_position)
+        angular_displacement = self.coordinates_to_angle(coordinates)
+        t = self.t_from_angular_displacement(angular_displacement)
         if save:
             self.known_date_s = t
         return t
@@ -303,14 +329,14 @@ class Satellite:
         # Initialize two-dimensional list for orbit
         orbit = [[], []]
 
-        # Generate a map of angular_positions for given period
+        # Generate a map of angular_displacements for given period
 
         # Time interval is the amount of time that passes per t in seconds
 
-        angular_pos = map(self.angular_position_at_t(from_known), range(int(period / self.time_interval) + 1))
+        angular_pos = map(self.angular_displacement_at_t(from_known), range(int(period / self.time_interval) + 1))
         # For each angular position, generate x,y coordinates, append coordinates to orbit
         for angle in angular_pos:
-            x, y = self.angular_position_to_coordinates(angle)
+            x, y = self.angular_displacement_to_coordinates(angle)
             orbit[0].append(x)
             orbit[1].append(y)
         self.orbit = orbit

@@ -1,6 +1,6 @@
 import cProfile
 from lib.utility import *
-
+# TODO add time_difference
 if __name__ == '__main__':
     cp = cProfile.Profile()
     cp.enable()

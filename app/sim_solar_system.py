@@ -14,7 +14,7 @@ def animate(i):
     ax1.scatter([0], [0], label=sun.name)
     for satellite in sun.satellite_list:
         ang_pos = lambda_dict[satellite.name](i)
-        x, y = satellite.angular_position_to_coordinates(ang_pos)
+        x, y = satellite.angular_displacement_to_coordinates(ang_pos)
 
         ax1.scatter(x, y, label=satellite.name)
         # ax1.plot([x, 0], [y, 0], label="{} Radius: {}".format(satellite.name, (x ** 2 + y ** 2) ** (1 / 2)))
@@ -35,7 +35,7 @@ def calculate_orbit_system(focus):
     lambda_dict = dict()
 
     for sat in satellites:
-        lambda_dict[sat.name] = sat.angular_position_at_t()
+        lambda_dict[sat.name] = sat.angular_displacement_at_t()
         # sat.calculate_orbit(period)  # Uncomment to calculate period
         # sat.to_json("json/{}".format(sat.name))  # Uncomment to save to JSON, add True to save orbit
     return lambda_dict
