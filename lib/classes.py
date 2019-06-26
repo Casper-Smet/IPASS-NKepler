@@ -1,5 +1,5 @@
 from math import cos, sin, atan2
-from lib.utility import gravitational_constant, pi, range_setter
+from lib.utility import gravitational_constant, pi, range_setter, time_difference
 from datetime import datetime as dt
 import json
 from functools import lru_cache
@@ -156,10 +156,18 @@ class Satellite:
         self.known_date_dt = known_date_dt
         self.calculate_t_for_position(coordinates, True)
         print(f"{self.known_date_dt} equals {self.known_date_s}")
-        pass
 
     def update_origin(self, updated_date: dt):
-        pass
+        # Earliest possible t where the satellite is in the same relative position
+        # TODO docstrings
+        # TODO exceptions
+        large_time = self.known_date_s + time_difference(self.known_date_dt, updated_date)
+        angular_position = self.angular_position_at_t()(large_time)
+        accurate_time = self.t_from_angular_position(angular_position)
+        self.known_date_s = accurate_time
+        self.known_date_dt = updated_date
+        print(f"{self.known_date_dt} equals {self.known_date_s}")
+        return self.known_date_s
 
     def calculate_velocity(self) -> float:
         """
