@@ -1,10 +1,37 @@
-from math import cos, sin
+from math import cos, sin, acos, asin, atan2
 from lib.utility import gravitational_constant, pi, range_setter
 import json
 from functools import lru_cache
 
+# TODO Add location at date; see plan below:
+"""Plan: 
+    1. Add date and possibly known position to initializer, make a separate setter for date + location (angular or 
+    euclidean coordinates?). 
+    2. Adding delta t to angular_position_at_t might be enough?
+Extra's:
+    1e. Add delta date calculator.
 
-# Todo add position of focus as argument to angle_to_x, angle_to_y
+Things to figure out:
+    1f. Data for planetary positions (T-SSAT?)
+    2f. Static standard date, or different date for each different satellite. Non-static is most likely candidate, but
+    will be significantly harder to program. 
+"""
+# Todo add position of focus as argument to angle_to_x, angle_to_y; see plan below
+"""Plan:
+    1. Rewrite Satellite to accept Satellite as a focus.
+        a. OPTIONAL; delete Focus in its entirety 
+    2. Add satellite_list to Satellite
+    2. Add optional 'current_focus_coordinates variable'.
+        a. Either angle_to_x, angle_to_y
+        b. Angular_position_to_coordinates
+        c. Conglomerate orbit function
+Extra's:
+    1e. Add satellite of satellite to simulations
+        a. Add moon to sim_solar_system     
+        b. Make separate model of moon around earth around sun
+        c. Add Jupiter's moons to sim_solar_system 
+"""
+
 
 class Focus:
     """Object around which satellite will  orbit"""
@@ -65,11 +92,16 @@ class Satellite:
     period: float
     angular_velocity: float
 
+    # Date related variables
+    known_date_s: float
+    # known_coordinates: list
+    # known_angular_position: float
+
     accuracy: int = 2
     time_interval: int = 1 * 60 * 60  # step size for t in seconds. Base position is 3600 (1 hour)
 
     def __init__(self, name: str, mass: float, focus: Focus = None, radius: float = None, velocity: float = None,
-                 period: float = None, angular_velocity: float = None, orbit: tuple = None):
+                 period: float = None, angular_velocity: float = None, known_date_s: float = None, orbit: tuple = None):
         """
         Initializer for Satellite
         :param focus: Focus
@@ -97,6 +129,8 @@ class Satellite:
             self.angular_velocity = angular_velocity
             #     Calculated from angular velocity and radius
             self.orbit = orbit
+            # Date related variables
+            self.known_date_s = known_date_s
 
         except TypeError as e:
             print("An unaccepted variable type was entered, Satellite requires Str, Float\n", e)
@@ -208,6 +242,7 @@ class Satellite:
     def angle_to_y(self, angle: float) -> float:
         """
         Calculates y coordinate using the following formula:
+        y = sin(O(t)) * r
         :rtype: float
         :param angle: float radians
         :return: y-coordinate
@@ -216,14 +251,20 @@ class Satellite:
             raise TypeError
         return sin(angle) * self.radius
 
-    def angular_position_at_t(self):
+    def angular_position_at_t(self, from_known: bool = False):
         """
         Returns lambda that calculates angular position at time index t.
         O(t) = wt
         """
+
         # Time interval is the amount of time that passes per t in seconds
-        return lambda t: round(range_setter(self.angular_velocity * t * self.time_interval, 6.283185307180001),
-                               self.accuracy)
+        if from_known:
+            return lambda t: round(
+                range_setter(self.angular_velocity * (t * self.time_interval + self.known_date_s), 6.283185307180001),
+                self.accuracy)
+        else:
+            return lambda t: round(
+                range_setter(self.angular_velocity * t * self.time_interval, 6.283185307180001), self.accuracy)
 
     @lru_cache(maxsize=None)
     def angular_position_to_coordinates(self, angular_position: float) -> tuple:
@@ -237,13 +278,14 @@ class Satellite:
         y = self.angle_to_y(angular_position)
         return x, y
 
-    def calculate_orbit(self, period: float = None) -> list:
+    def calculate_orbit(self, period: float = None, from_known: bool = False) -> list:
         """
         Calculates all orbital coordinates
+        :param from_known: bool
         :param period: float
         :return: orbit
         """
-        # If no period is given, set period to self.period
+        # If no period is given, set period to self.period. Period is always in seconds
         if not period:
             period = self.period
 
@@ -254,7 +296,7 @@ class Satellite:
 
         # Time interval is the amount of time that passes per t in seconds
 
-        angular_pos = map(self.angular_position_at_t(), range(int(period / self.time_interval) + 1))
+        angular_pos = map(self.angular_position_at_t(from_known), range(int(period / self.time_interval) + 1))
         # For each angular position, generate x,y coordinates, append coordinates to orbit
         for angle in angular_pos:
             x, y = self.angular_position_to_coordinates(angle)
@@ -262,6 +304,28 @@ class Satellite:
             orbit[1].append(y)
         self.orbit = orbit
         return orbit
+
+    def coordinates_to_angle(self, coordinates: list):
+        # TODO docstrings
+        # TODO exceptions
+        # TODO non-static middle_point
+        middle_point = [0, 0]
+        return atan2(middle_point[1] - coordinates[1], middle_point[0] - coordinates[0])
+
+    def t_from_angular_position(self, angular_position: float) -> float:
+        # TODO docstrings
+        if type(angular_position) not in [float, int]:
+            raise TypeError
+        return range_setter(angular_position, 6.283185307180001) / self.angular_velocity
+
+    def calculate_t_for_position(self, coordinates: list, save: bool = False) -> float:
+        # TODO docstrings
+        # TODO exceptions
+        angular_position = self.coordinates_to_angle(coordinates)
+        t = self.t_from_angular_position(angular_position)
+        if save:
+            self.known_date_s = t
+        return t
 
     def __str__(self) -> str:
         return "Name: {}, Mass: {}, Radius: {}, Period: {} Focus: {}, Velocity: {}, Angular Velocity: {}".format(
