@@ -92,7 +92,25 @@ class TestSatellite(unittest.TestCase):
             self.sat_3.angle_to_x(1j)
             self.sat_1.angle_to_x("Test")
 
+    def test_coordinates_to_angle(self):
+        self.assertAlmostEqual(self.sat_1.coordinates_to_angle(self.sat_1.angular_position_to_coordinates(1.0472)),
+                               1.0472, places=2)
+
+        self.assertAlmostEqual(self.sat_2.coordinates_to_angle(self.sat_2.angular_position_to_coordinates(6.2832)),
+                               1.4692819998884943e-05, places=7)
+
+        self.assertAlmostEqual(self.sat_3.coordinates_to_angle(self.sat_3.angular_position_to_coordinates(-2)), 4.28,
+                               places=2)
+
+        with self.assertRaises(TypeError):
+            self.sat_1.coordinates_to_angle(4)
+            self.sat_2.coordinates_to_angle("Wow")
+            self.sat_3.coordinates_to_angle(1.2)
+            self.sat_3.coordinates_to_angle(1j)
+
     def test_angular_position_at_t(self):
+        # TODO change lambda call
+        # TODO add tests for 'true'
         sat_1_lambda = self.sat_1.angular_position_at_t()
         self.assertAlmostEqual(sat_1_lambda(600), 5.72, places=2)
 
@@ -101,6 +119,17 @@ class TestSatellite(unittest.TestCase):
 
         sat_3_lambda = self.sat_3.angular_position_at_t()
         self.assertAlmostEqual(sat_3_lambda(23), 0.03, places=2)
+
+    def test_t_from_angular_position(self):
+        self.assertAlmostEqual(self.sat_1.t_from_angular_position(5.72) / Satellite.time_interval, 600, places=0)
+        self.assertAlmostEqual(self.sat_2.t_from_angular_position(1.57) / Satellite.time_interval, 527.39, places=0)
+        self.assertAlmostEqual(self.sat_3.t_from_angular_position(0.03) / Satellite.time_interval, 26, places=0)
+
+        with self.assertRaises(TypeError):
+            self.sat_1.t_from_angular_position([])
+            self.sat_2.t_from_angular_position(())
+            self.sat_3.t_from_angular_position(1j)
+            self.sat_1.t_from_angular_position("Test")
 
     def test_angular_position_to_coordinates(self):
         x, y = self.sat_1.angular_position_to_coordinates(1.0472)
@@ -120,6 +149,20 @@ class TestSatellite(unittest.TestCase):
             self.sat_2.angular_position_to_coordinates(())
             self.sat_3.angular_position_to_coordinates(1j)
             self.sat_3.angular_position_to_coordinates("test")
+
+    def test_calculate_t_for_position(self):
+        self.assertAlmostEqual(self.sat_1.calculate_t_for_position(
+            self.sat_1.angular_position_to_coordinates(5.72)) / Satellite.time_interval, 600, places=0)
+        self.assertAlmostEqual(self.sat_2.calculate_t_for_position(
+            self.sat_2.angular_position_to_coordinates(1.57)) / Satellite.time_interval, 527.39, places=0)
+        self.assertAlmostEqual(self.sat_3.calculate_t_for_position(
+            self.sat_2.angular_position_to_coordinates(0.03)) / Satellite.time_interval, 26, places=0)
+
+        with self.assertRaises(TypeError):
+            self.sat_1.calculate_t_for_position(5)
+            self.sat_2.calculate_t_for_position("Test")
+            self.sat_3.calculate_t_for_position({})
+            self.sat_1.calculate_t_for_position(1j)
 
 
 class TestFocus(unittest.TestCase):
