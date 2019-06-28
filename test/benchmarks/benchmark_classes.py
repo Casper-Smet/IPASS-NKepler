@@ -32,6 +32,6 @@ if __name__ == '__main__':
     date2 = dt(2019, 6, 25)
     calculate_orbit_system(sun)
     cp.disable()
-    print("Orbits calculated per minute, one full orbit per satellite")
+    print("Orbits calculated per minute, two full orbits per satellite")
     cp.print_stats()
     plt.show()
