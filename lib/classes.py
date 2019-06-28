@@ -95,14 +95,13 @@ class Satellite:
     angular_velocity: float
 
     # Date related variables
-    known_date_s: float
-    known_date_dt: dt
+    known_date: dt
 
     accuracy: int = 2
     time_interval: int = 1 * 60 * 60  # step size for t in seconds. Base position is 3600 (1 hour)
 
     def __init__(self, name: str, mass: float, focus: Focus = None, radius: float = None, velocity: float = None,
-                 period: float = None, angular_velocity: float = None, known_date_s: float = None,
+                 period: float = None, angular_velocity: float = None,
                  known_date_dt: dt = None, orbit: tuple = None):
         """
         Initializer for Satellite
@@ -134,8 +133,8 @@ class Satellite:
             #     Calculated from angular velocity and radius
             self.orbit = orbit
             # Date related variables
-            self.known_date_s = known_date_s
-            self.known_date_dt = known_date_dt
+            self.known_date = known_date_dt
+            self.angle_at_0 = 0.0
 
         except TypeError as e:
             print("An unaccepted variable type was entered, Satellite requires Str, Float\n", e)
@@ -158,39 +157,39 @@ class Satellite:
         :param known_date_dt: datetime
         :param coordinates: list
         """
+        # TODO rewrite docstring
         if type(known_date_dt) != dt:
             raise TypeError
         if type(coordinates) not in [list, tuple]:
             raise TypeError
-        if type(coordinates[0]) not in [int, float] or type(coordinates[1]) not in [int, float]:
-            raise TypeError
         if len(coordinates) != 2:
             raise ValueError
-        self.known_date_dt = known_date_dt
-        self.calculate_t_for_position(coordinates, True)
-        print(f"{self.known_date_dt} equals {self.known_date_s}")
+        if type(coordinates[0]) not in [int, float] or type(coordinates[1]) not in [int, float]:
+            raise TypeError
+
+        self.known_date = known_date_dt
+        self.angle_at_0 = self.coordinates_to_angle(coordinates)
+        print(f"{self.known_date} equals {self.angle_at_0}")
 
     def update_origin(self, updated_date: dt) -> float:
         """
         Updates origin point for the satellite's orbit. Accepts a datetime object, then calculates the difference in
-        time between the entered date and known_date_dt. Next it calculates the angular displacement for that difference
-        in time. Finally finding the first moment of t in an orbit where the angular position equals the one calculated
-        earlier.
+        time between the entered date and known_date. Next it calculates the angular displacement for that difference
+        in time. Angle_at_0 is set to that angular displacement, known_date is set to the updated_date.
         :param updated_date: datetime
-        :return known_date_s: float
+        :return angle_at_0: float
         """
-
+        # TODO rename?, add option to save/not save
         if type(updated_date) != dt:
             raise TypeError
-        large_time = self.known_date_s + time_difference(self.known_date_dt, updated_date)
-        angular_displacement = self.angular_displacement_at_t()(large_time)
 
-        # Earliest possible t where the satellite is in the same relative position
-        accurate_time = self.t_from_angular_displacement(angular_displacement)
-        self.known_date_s = accurate_time
-        self.known_date_dt = updated_date
-        print(f"{self.known_date_dt} equals {self.known_date_s}")
-        return self.known_date_s
+        time = time_difference(self.known_date, updated_date)
+        new_angle = self.angular_displacement_at_t(True)(time)
+
+        self.angle_at_0 = new_angle
+        self.known_date = updated_date
+        print(f"{self.known_date} equals {self.angle_at_0}")
+        return self.angle_at_0
 
     def calculate_velocity(self) -> float:
         """
@@ -262,12 +261,10 @@ class Satellite:
     def coordinates_to_angle(self, coordinates: list):
         """
         Calculates angular displacement with coordinates of the satellite and its focus using the following formula:
-        O = atan2(dx, dy)
+        O = atan2(dy, dx)
         :param coordinates:
         :return angular displacement:
         """
-        # TODO docstrings
-        # TODO exceptions
         if type(coordinates) not in [list, tuple]:
             raise TypeError
         return range_setter(atan2(coordinates[1] - self.middle_point[1], coordinates[0] - self.middle_point[0]),
@@ -276,23 +273,19 @@ class Satellite:
     def angular_displacement_at_t(self, from_known: bool = False):
         """
         Returns lambda that calculates angular position at time index t.
+        O(t) = wt + theta0
+        or
         O(t) = wt
         """
 
         # Time interval is the amount of time that passes per t in seconds
         if from_known:
             return lambda t: round(
-                range_setter(self.angular_velocity * (t * self.time_interval + self.known_date_s), 6.283185307180001),
+                range_setter(self.angular_velocity * (t * self.time_interval) + self.angle_at_0, 6.283185307180001),
                 self.accuracy)
         else:
             return lambda t: round(
                 range_setter(self.angular_velocity * t * self.time_interval, 6.283185307180001), self.accuracy)
-
-    def t_from_angular_displacement(self, angular_displacement: float) -> float:
-        # TODO docstrings
-        if type(angular_displacement) not in [float, int]:
-            raise TypeError
-        return angular_displacement / self.angular_velocity
 
     @lru_cache(maxsize=None)
     def angular_displacement_to_coordinates(self, angular_displacement: float) -> tuple:
@@ -305,15 +298,6 @@ class Satellite:
         x = self.angle_to_x(angular_displacement)
         y = self.angle_to_y(angular_displacement)
         return x, y
-
-    def calculate_t_for_position(self, coordinates: list, save: bool = False) -> float:
-        # TODO docstrings
-        # TODO exceptions
-        angular_displacement = self.coordinates_to_angle(coordinates)
-        t = self.t_from_angular_displacement(angular_displacement)
-        if save:
-            self.known_date_s = t
-        return t
 
     def calculate_orbit(self, period: float = None, from_known: bool = False) -> list:
         """
