@@ -42,6 +42,15 @@ class TestUtility(unittest.TestCase):
             range_setter(360, [])
             range_setter([], [])
 
+    def test_time_difference(self):
+        self.assertEqual(time_difference(dt(2000, 5, 2), dt(2000, 5, 3)), 86400)
+
+        with self.assertRaises(TypeError):
+            time_difference([], 1j)
+            time_difference(dt(200, 5, 2), "test")
+            time_difference("2000-05-02", dt(2019, 6, 28))
+            time_difference(1, 2.0)
+
 
 if __name__ == '__main__':
     unittest.main()
