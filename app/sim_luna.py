@@ -2,6 +2,7 @@ from lib.classes import Focus, Satellite
 import matplotlib;
 
 matplotlib.use("TkAgg")
+from matplotlib import style
 import matplotlib.pyplot as plt
 import matplotlib.animation as animation
 
@@ -29,6 +30,10 @@ def animate(i):
 
 
 if __name__ == '__main__':
+    # This simulation file simulates the orbit of Luna (our moon) during twice its orbit. This is circa 54 days.
+    # Luna's orbit is very close to circular, meaning that this orbit is relatively accurate.
+    # Finally, no dates are taken into account for this orbit.
+
     # Code to generate orbits, uncomment this block to calculate it yourself:
     earth = Focus("Earth", 5.972E24)
     moon = Satellite("Luna", 7.34767309E22)
@@ -40,7 +45,7 @@ if __name__ == '__main__':
     print(moon)
     # A gap shows up if you calculate per day, to avoid this the the moon is plotted over twice its period.
     orbit = moon.calculate_orbit(moon.period * 2)
-    moon.to_json('json/Luna')
+    # moon.to_json('json/Luna')
 
     # If you are calculating the orbits yourself, comment the 4 following lines
     # For per day:
@@ -50,6 +55,8 @@ if __name__ == '__main__':
     # moon, foc1, = json_satellite_construct('json/moon-hours')
 
     orbit = moon.orbit
+
+    style.use('ggplot')
 
     fig = plt.figure(figsize=(10, 6))
     ax1 = fig.add_subplot(1, 1, 1)
@@ -62,4 +69,4 @@ if __name__ == '__main__':
 
     plt.show()
     # Uncomment the following line to save as GIF, make sure you've got imagemagick installed
-    # ani.save("orbits/moon.gif", writer='imagemagick', fps=30)
+    # ani.save("orbits/moon.gif", writer='imagemagick', fps=15)

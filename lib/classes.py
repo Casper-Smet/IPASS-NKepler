@@ -4,18 +4,10 @@ from datetime import datetime as dt
 import json
 from functools import lru_cache
 
-# TODO Add location at date; see plan below:
+# TODO find and add location data for simulation (1f)
 """Plan: 
-    1. Add date and possibly known position to initializer, make a separate setter for date + location (angular or 
-    euclidean coordinates?). Done
-    2. Adding delta t to angular_displacement_at_t might be enough? Done
-Extra's:
-    1e. Add delta date calculator. Done
-
 Things to figure out:
     1f. Data for planetary positions (T-SSAT?)
-    2f. Static standard date, or different date for each different satellite. Non-static is most likely candidate, but
-    will be significantly harder to program. Done
 """
 # Todo add position of focus as argument to angle_to_x, angle_to_y; see plan below
 """Plan:
