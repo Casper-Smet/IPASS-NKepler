@@ -2,8 +2,6 @@ import unittest
 from lib.utility import *
 
 
-# TODO add time_difference
-
 class TestUtility(unittest.TestCase):
     # Differences in the accuracy of the 'round' function can be attributed to the converter used to this these
     # functions only being accurate to that point.
