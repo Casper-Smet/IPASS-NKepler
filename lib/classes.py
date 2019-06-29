@@ -4,33 +4,15 @@ from datetime import datetime as dt
 import json
 from functools import lru_cache
 
-# TODO find and add location data for simulation (1f)
-"""Plan: 
-Things to figure out:
-    1f. Data for planetary positions (T-SSAT?)
-"""
-# Todo add position of focus as argument to angle_to_x, angle_to_y; see plan below
-"""Plan:
-    1. Rewrite Satellite to accept Satellite as a focus.
-        a. OPTIONAL; delete Focus in its entirety 
-    2. Add satellite_list to Satellite
-    2. Add optional 'current_focus_coordinates variable'.
-        a. Either angle_to_x, angle_to_y
-        b. angular_displacement_to_coordinates
-        c. Conglomerate orbit function
-Extra's:
-    1e. Add satellite of satellite to simulations
-        a. Add moon to sim_solar_system     
-        b. Make separate model of moon around earth around sun
-        c. Add Jupiter's moons to sim_solar_system 
-"""
-
 
 class Focus:
     """Object around which satellite will  orbit"""
-    name = ""
-    mass = 0.0
-    radius = 0.0
+    name: str
+    mass: float
+    radius: float
+    satellite_list: list
+
+    # TODO Remove radius from Focus
 
     def __init__(self, name: str, mass: float, radius: float = 0.0):
         """Initializer for Focus
@@ -92,9 +74,14 @@ class Satellite:
     accuracy: int = 2
     time_interval: int = 1 * 60 * 60  # step size for t in seconds. Base position is 3600 (1 hour)
 
+    satellite_list: list
+
+    # # Only saved when Satellite has a satellite of its own, use middle_point?
+    # x, y = 0.0, 0.0
+
     def __init__(self, name: str, mass: float, focus: Focus = None, radius: float = None, velocity: float = None,
                  period: float = None, angular_velocity: float = None,
-                 known_date_dt: dt = None, orbit: tuple = None):
+                 known_date_dt: dt = None, orbit: tuple = ([], [])):
         """
         Initializer for Satellite
         :param focus: Focus
@@ -107,6 +94,8 @@ class Satellite:
         :param mass: float
         """
         # TODO EXCEPTIONS (including negative mass and radius)
+        # TODO add variables to Docstring
+        # TODO add possibility of sub-satellites.
         try:
             # Independent of focus
             self.name = name
@@ -128,6 +117,9 @@ class Satellite:
             self.known_date = known_date_dt
             self.angle_at_0 = 0.0
 
+            # For sub satellites:
+            self.satellite_list = list()
+
         except TypeError as e:
             print("An unaccepted variable type was entered, Satellite requires Str, Float\n", e)
 
@@ -141,6 +133,16 @@ class Satellite:
         self.focus = focus
         focus.add_to_satellites(self)
         self.radius = radius
+
+    def add_to_satellites(self, satellite: object):
+        """
+        Adds satellite to satellite_list
+        :param satellite:
+        """
+        if type(satellite) != Satellite:
+            raise TypeError
+
+        self.satellite_list.append(satellite)
 
     def set_origin(self, known_date_dt: dt, coordinates: list):
         """
@@ -317,6 +319,43 @@ class Satellite:
             orbit[1].append(y)
         self.orbit = orbit
         return orbit
+
+    def absolute_orbit_conversion(self):
+        # TODO Test
+        # TODO docstrings
+        if type(self.focus) != Satellite:
+            print("absolute_orbit_conversion requires a satellite focus.")
+            raise TypeError
+        if len(self.focus.orbit[0]) < len(self.orbit[0]):
+            print("absolute_orbit_conversion requires a calculated orbit of the same length or greater than the sub "
+                  "satellite")
+            raise ValueError
+        focus_orbit = self.focus.orbit
+        satellite_orbit = self.orbit
+        absolute_orbit = [[], []]
+        for t in range(len(focus_orbit[0])):
+            absolute_orbit[0].append(satellite_orbit[0][t] + focus_orbit[0][t])
+            absolute_orbit[1].append(satellite_orbit[1][t] + focus_orbit[1][t])
+
+        return absolute_orbit
+
+    def absolute_position_at_t(self, t: float, from_known: bool = False) -> tuple:
+        # TODO docstring
+        # TODO testing
+        if type(self.focus) != Satellite:
+            print("absolute_position_at_t requires a satellite focus.")
+            raise TypeError
+        # Calculate angular displacement for both focus and satellite
+        satellite_angular_displacement = self.angular_displacement_at_t(from_known)(t)
+        focus_angular_displacement = self.focus.angular_displacement_at_t(from_known)(t)
+
+        satellite_relative_pos = self.angular_displacement_to_coordinates(satellite_angular_displacement)
+        focus_relative_pos = self.focus.angular_displacement_to_coordinates(focus_angular_displacement)
+
+        absolute_x = satellite_relative_pos[0] + focus_relative_pos[0]
+        absolute_y = satellite_relative_pos[1] + focus_relative_pos[1]
+
+        return absolute_x, absolute_y
 
     def to_json(self, filename: str = None, save_orbit: bool = False):
         """
