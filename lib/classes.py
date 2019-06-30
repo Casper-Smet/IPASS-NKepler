@@ -395,7 +395,13 @@ class Satellite:
         return absolute_orbit
 
     def absolute_position_at_t(self, t: float, from_known: bool = False) -> tuple:
-        # TODO docstring
+        """
+        Calculates absolute position of satellite at t. When from_known is true, angle_at_0 is taken into account for
+        the purposes of this calculation. Calculates and adds focus coordinates at t to satellite coordinates at t.
+        :param t: float or int
+        :param from_known: bool
+        :return: coordinates - tuple
+        """
         # TODO testing
         if type(self.focus) != Satellite:
             print("absolute_position_at_t requires a satellite focus.")
