@@ -48,7 +48,7 @@ def calculate_orbit_system(focus):
     for sat in satellites:
         lambda_dict[sat.name] = sat.angular_displacement_at_t()
         trail_dict[sat.name] = [[], []]
-        # sat.calculate_orbit(period)  # Uncomment to calculate period
+        # sat.calculate_orbit(period)  # Uncomment to calculate orbit
         # sat.to_json("json/{}".format(sat.name))  # Uncomment to save to JSON, add True to save orbit
     return lambda_dict, trail_dict
 
@@ -86,7 +86,7 @@ if __name__ == '__main__':
 
     ani = animation.FuncAnimation(fig, animate, interval=1, frames=int(max(periods) / Satellite.time_interval))
 
-    # plt.show()
+    plt.show()
 
     # Uncomment the following line to save as GIF, make sure you've got imagemagick installed
-    ani.save("orbits/solarouter.gif", writer='imagemagick', fps=30)
+    # ani.save("orbits/solarouter.gif", writer='imagemagick', fps=30)
