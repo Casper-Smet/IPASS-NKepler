@@ -14,17 +14,26 @@ class TestSatellite(unittest.TestCase):
         self.sat_2 = Satellite("Mercury", 0.330E24, self.foc_2, 0.0579E12 + 2.440E6)
         self.sat_3 = Satellite("Venus", 4.87E24, self.foc_2, 0.1082E12 + 6.052E6)
 
+        self.sat_foc = Satellite("Earth", 5.972E24, self.foc_2, 149600000000)
+        self.sub_sat = Satellite("Moon", 7.34767309E22, self.sat_foc, 384400E3)
+
         self.sat_1.calculate_velocity()
         self.sat_2.calculate_velocity()
         self.sat_3.calculate_velocity()
+        self.sat_foc.calculate_velocity()
+        self.sub_sat.calculate_velocity()
 
         self.sat_1.calculate_period()
         self.sat_2.calculate_period()
         self.sat_3.calculate_period()
+        self.sat_foc.calculate_period()
+        self.sub_sat.calculate_period()
 
         self.sat_1.calculate_angular_velocity()
         self.sat_2.calculate_angular_velocity()
         self.sat_3.calculate_angular_velocity()
+        self.sat_foc.calculate_angular_velocity()
+        self.sub_sat.calculate_angular_velocity()
 
         self.date1 = dt(2000, 5, 2)
         self.date2 = dt(2018, 6, 26)
@@ -92,8 +101,20 @@ class TestSatellite(unittest.TestCase):
         self.assertAlmostEqual(self.sat_3.angular_velocity * 10 ** 10, 3236.95, places=2)
 
     def test_calculate_orbit(self):
-        # TODO test orbit (too many values?) first last, 90 degree angles?
-        pass
+        sat_1_orbit = self.sat_1.calculate_orbit()
+        self.assertEqual((sat_1_orbit[0][0], sat_1_orbit[1][0]), (384400000.0, 0.0))
+        self.assertEqual((sat_1_orbit[0][330], sat_1_orbit[1][330]), (-384386414.7163839, -3231745.887931928))
+        self.assertEqual((sat_1_orbit[0][658], sat_1_orbit[1][658]), (384366586.0671493, -5068285.221325911))
+
+        sat_2_orbit = self.sat_2.calculate_orbit()
+        self.assertEqual((sat_2_orbit[0][0], sat_2_orbit[1][0]), (57902440000.0, 0.0))
+        self.assertEqual((sat_2_orbit[0][1055], sat_2_orbit[1][1055]), (-57902366563.929955, 92218489.93770358))
+        self.assertEqual((sat_2_orbit[0][2110], sat_2_orbit[1][2110]), (57902146255.90609, -184436745.9590649))
+
+        sat_3_orbit = self.sat_3.calculate_orbit()
+        self.assertEqual((sat_3_orbit[0][0], sat_3_orbit[1][0]), (108206052000.0, 0.0))
+        self.assertEqual((sat_3_orbit[0][2696], sat_3_orbit[1][2696]), (-108205914765.24419, 172334684.2993254))
+        self.assertEqual((sat_3_orbit[0][5391], sat_3_orbit[1][5391]), (108205503061.32487, -344668931.46398264))
 
     def test_angle_to_y(self):
         self.assertAlmostEqual(self.sat_1.angle_to_y(1.0472), 332900635.872, places=2)
@@ -169,6 +190,19 @@ class TestSatellite(unittest.TestCase):
             self.sat_2.angular_displacement_to_coordinates(())
             self.sat_3.angular_displacement_to_coordinates(1j)
             self.sat_3.angular_displacement_to_coordinates("test")
+
+    def test_absolute_orbit_conversion(self):
+        self.sat_foc.calculate_orbit()
+        self.sub_sat.calculate_orbit()
+
+        abs_orbit = self.sub_sat.absolute_orbit_conversion()
+        self.assertEqual((abs_orbit[0][0], abs_orbit[1][0]), (149984400000.0, 0.0))
+        self.assertEqual((abs_orbit[0][329], abs_orbit[1][329]), (144927761525.38757, 35560925129.28043))
+        self.assertEqual((abs_orbit[0][658], abs_orbit[1][658]), (133762982500.08836, 67746720007.48728))
+
+    def test_absolute_position_at(self):
+        self.assertEqual(self.sub_sat.absolute_position_at_t(300), (145624998367.1987, 32753970962.781948))
+        self.assertEqual(self.sub_sat.absolute_position_at_t(0), (149984400000.0, 0.0))
 
 
 class TestFocus(unittest.TestCase):
