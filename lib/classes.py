@@ -98,52 +98,58 @@ class Satellite:
         if type(name) != str:
             print("variable 'name' must be string")
             raise TypeError
+        if known_date:
+            if type(known_date) != dt:
+                print("known_date must be in datetime.datetime")
+                raise TypeError
 
-        if type(known_date) != dt:
-            print("known_date must be in datetime.datetime")
-            raise TypeError
+        if focus:
+            if type(focus) not in [Satellite, Focus]:
+                print("focus must either be Satellite or Focus")
+                raise TypeError
 
-        if type(focus) not in [Satellite, Focus]:
-            print("focus must either be Satellite or Focus")
-            raise TypeError
+        if radius:
+            if type(radius) not in [float, int]:
+                print("radius must be in integers or floats")
+                raise TypeError
+            if radius <= 0:
+                print(f"radius must equal or be larger than 0. Given radius was {radius}")
+                raise ValueError
 
-        if type(radius) not in [float, int]:
-            print("radius must be in integers or floats")
-            raise TypeError
-        if radius <= 0:
-            print(f"radius must equal or be larger than 0. Given radius was {radius}")
-            raise ValueError
+        if velocity:
+            if type(velocity) not in [float, int]:
+                print("velocity must be in integers or floats")
+                raise TypeError
+            if velocity == 0:
+                print("velocity may not equal 0.")
+                raise ValueError
 
-        if type(velocity) not in [float, int]:
-            print("velocity must be in integers or floats")
-            raise TypeError
-        if velocity == 0:
-            print("velocity may not equal 0.")
-            raise ValueError
+        if period:
+            if type(period) not in [float, int]:
+                print("period must be in integers or floats")
+                raise TypeError
+            if period <= 0:
+                print(f"period must equal or be larger than 0. Given period was {period}")
+                raise ValueError
 
-        if type(period) not in [float, int]:
-            print("period must be in integers or floats")
-            raise TypeError
-        if period <= 0:
-            print(f"period must equal or be larger than 0. Given period was {period}")
-            raise ValueError
+        if angular_velocity:
+            if type(angular_velocity) not in [float, int]:
+                print("angular velocity must be in integers or floats")
+                raise TypeError
+            if angular_velocity == 0:
+                print("angular velocity may not equal 0")
+                raise ValueError
 
-        if type(angular_velocity) not in [float, int]:
-            print("angular velocity must be in integers or floats")
-            raise TypeError
-        if angular_velocity == 0:
-            print("angular velocity may not equal 0")
-            raise ValueError
-
-        if type(orbit) not in [tuple, list]:
-            print("orbit must be a tuple or list")
-            raise TypeError
-        if len(orbit) != 2:
-            print(f"orbit must be a two dimensional iterable, a {len(orbit)} dimensional iterable was entered")
-            raise ValueError
-        if type(orbit[0]) not in [tuple, list] or type(orbit[1]) not in [tuple, int]:
-            print("orbit must be a two dimensional iterable, no iterables found in second dimension")
-            raise TypeError
+        if orbit != [[], []]:
+            if type(orbit) not in [tuple, list]:
+                print("orbit must be a tuple or list")
+                raise TypeError
+            if len(orbit) != 2:
+                print(f"orbit must be a two dimensional iterable, a {len(orbit)} dimensional iterable was entered")
+                raise ValueError
+            if type(orbit[0]) not in [tuple, list] or type(orbit[1]) not in [tuple, list]:
+                print("orbit must be a two dimensional iterable, no iterables found in second dimension")
+                raise TypeError
 
         # Independent of focus
         self.name = name
