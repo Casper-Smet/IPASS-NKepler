@@ -377,7 +377,6 @@ class Satellite:
         :return: absolute orbit
         :rtype: tuple
         """
-        # TODO Test
         if type(self.focus) != Satellite:
             print("absolute_orbit_conversion requires a satellite focus.")
             raise TypeError
@@ -402,7 +401,6 @@ class Satellite:
         :param from_known: bool
         :return: coordinates - tuple
         """
-        # TODO testing
         if type(self.focus) != Satellite:
             print("absolute_position_at_t requires a satellite focus.")
             raise TypeError
