@@ -191,12 +191,12 @@ class Satellite:
 
     def set_origin(self, known_date_dt: dt, coordinates: list):
         """
-        Set an origin point for the Satellite's orbit. The known date is set to equal a relative value of t in seconds.
-        This value of t is the first moment the Satellite has reached those coordinates in one orbit.
+        Set an origin point for the Satellite's orbit. Angular displacement is calculated at coordinates.
+        Self.angle_at_0 is then set to the calculated angular displacement, and self.known_date to known_date_dt.
+        This function is used for setting the angle_at_0.
         :param known_date_dt: datetime
         :param coordinates: list
         """
-        # TODO rewrite docstring
         if type(known_date_dt) != dt:
             raise TypeError
         if type(coordinates) not in [list, tuple]:
@@ -212,13 +212,11 @@ class Satellite:
 
     def update_origin(self, updated_date: dt) -> float:
         """
-        Updates origin point for the satellite's orbit. Accepts a datetime object, then calculates the difference in
-        time between the entered date and known_date. Next it calculates the angular displacement for that difference
-        in time. Angle_at_0 is set to that angular displacement, known_date is set to the updated_date.
+        Updates angle_at_0 based on the time difference between updated_date and self.known_date. Sets angle_at_0
+        to newly calculated angular displacement, and self.known_date to updated_date.
         :param updated_date: datetime
         :return angle_at_0: float
         """
-        # TODO rename?, add option to save/not save
         if type(updated_date) != dt:
             raise TypeError
 
@@ -365,9 +363,15 @@ class Satellite:
         self.orbit = orbit
         return orbit
 
-    def absolute_orbit_conversion(self):
+    def absolute_orbit_conversion(self) -> tuple:
+        """
+        Calculates the absolute orbit of the satellite based on its focus' orbit. The focus has to be a Satellite, and
+        its relative orbit must already have been calculated. Relative orbit of the sub satellite must also have been
+        calculated. Adds focus coordinates at t to satellite coordinates at t.
+        :return: absolute orbit
+        :rtype: tuple
+        """
         # TODO Test
-        # TODO docstrings
         if type(self.focus) != Satellite:
             print("absolute_orbit_conversion requires a satellite focus.")
             raise TypeError
