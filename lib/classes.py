@@ -9,12 +9,9 @@ class Focus:
     """Object around which satellite will  orbit"""
     name: str
     mass: float
-    radius: float
     satellite_list: list
 
-    # TODO Remove radius from Focus
-
-    def __init__(self, name: str, mass: float, radius: float = 0.0):
+    def __init__(self, name: str, mass: float):
         """Initializer for Focus
         :param name: String
         :param mass: Float
@@ -23,7 +20,6 @@ class Focus:
         try:
             self.name = str(name)
             self.mass = float(mass)
-            self.radius = float(radius)
             self.satellite_list = list()
         except ValueError as e:
             print("An unaccepted variable type was entered, Focus requires Str, Float, Float\n", e)
@@ -74,17 +70,16 @@ class Satellite:
     accuracy: int = 2
     time_interval: int = 1 * 60 * 60  # step size for t in seconds. Base position is 3600 (1 hour)
 
+    # When satellite is also utilized as a focus
     satellite_list: list
-
-    # # Only saved when Satellite has a satellite of its own, use middle_point?
-    # x, y = 0.0, 0.0
 
     def __init__(self, name: str, mass: float, focus: Focus = None, radius: float = None, velocity: float = None,
                  period: float = None, angular_velocity: float = None,
-                 known_date_dt: dt = None, orbit: tuple = ([], [])):
+                 known_date: dt = None, orbit: tuple = ([], [])):
         """
         Initializer for Satellite
-        :param focus: Focus
+        :param known_date: datetime.datetime
+        :param focus: Focus or Satellite
         :param radius: float
         :param velocity: float
         :param period: float
@@ -93,35 +88,85 @@ class Satellite:
         :param name: str
         :param mass: float
         """
-        # TODO EXCEPTIONS (including negative mass and radius)
-        # TODO add variables to Docstring
-        # TODO add possibility of sub-satellites.
-        try:
-            # Independent of focus
-            self.name = name
-            self.mass = mass
-            # Dependent on focus
-            self.focus = focus
-            if focus:
-                focus.add_to_satellites(self)
-            self.middle_point = [0, 0]
-            self.radius = radius
-            #     Calculated from focus
-            self.velocity = velocity
-            self.period = period
-            #     Calculated from velocity and radius
-            self.angular_velocity = angular_velocity
-            #     Calculated from angular velocity and radius
-            self.orbit = orbit
-            # Date related variables
-            self.known_date = known_date_dt
-            self.angle_at_0 = 0.0
+        if type(mass) not in [float, int]:
+            print("mass must be in integers or floats")
+            raise TypeError
+        if mass <= 0:
+            print(f"mass must equal or be larger than 0. Given mass was {mass}")
+            raise ValueError
 
-            # For sub satellites:
-            self.satellite_list = list()
+        if type(name) != str:
+            print("variable 'name' must be string")
+            raise TypeError
 
-        except TypeError as e:
-            print("An unaccepted variable type was entered, Satellite requires Str, Float\n", e)
+        if type(known_date) != dt:
+            print("known_date must be in datetime.datetime")
+            raise TypeError
+
+        if type(focus) not in [Satellite, Focus]:
+            print("focus must either be Satellite or Focus")
+            raise TypeError
+
+        if type(radius) not in [float, int]:
+            print("radius must be in integers or floats")
+            raise TypeError
+        if radius <= 0:
+            print(f"radius must equal or be larger than 0. Given radius was {radius}")
+            raise ValueError
+
+        if type(velocity) not in [float, int]:
+            print("velocity must be in integers or floats")
+            raise TypeError
+        if velocity == 0:
+            print("velocity may not equal 0.")
+            raise ValueError
+
+        if type(period) not in [float, int]:
+            print("period must be in integers or floats")
+            raise TypeError
+        if period <= 0:
+            print(f"period must equal or be larger than 0. Given period was {period}")
+            raise ValueError
+
+        if type(angular_velocity) not in [float, int]:
+            print("angular velocity must be in integers or floats")
+            raise TypeError
+        if angular_velocity == 0:
+            print("angular velocity may not equal 0")
+            raise ValueError
+
+        if type(orbit) not in [tuple, list]:
+            print("orbit must be a tuple or list")
+            raise TypeError
+        if len(orbit) != 2:
+            print(f"orbit must be a two dimensional iterable, a {len(orbit)} dimensional iterable was entered")
+            raise ValueError
+        if type(orbit[0]) not in [tuple, list] or type(orbit[1]) not in [tuple, int]:
+            print("orbit must be a two dimensional iterable, no iterables found in second dimension")
+            raise TypeError
+
+        # Independent of focus
+        self.name = name
+        self.mass = mass
+        # Dependent on focus
+        self.focus = focus
+        if focus:
+            focus.add_to_satellites(self)
+        self.middle_point = [0, 0]
+        self.radius = radius
+        #     Calculated from focus
+        self.velocity = velocity
+        self.period = period
+        #     Calculated from velocity and radius
+        self.angular_velocity = angular_velocity
+        #     Calculated from angular velocity and radius
+        self.orbit = orbit
+        # Date related variables
+        self.known_date = known_date
+        self.angle_at_0 = 0.0
+
+        # For sub satellites:
+        self.satellite_list = list()
 
     def set_focus(self, focus: Focus, radius: float):
         """
