@@ -9,7 +9,6 @@ from datetime import datetime as dt
 def calculate_orbit_system(focus):
     satellites = focus.satellite_list
     for sat in satellites:
-        sat.time_interval = 1 * 60  # minutes
         sat.calculate_velocity()
         sat.calculate_period()
         sat.calculate_angular_velocity()
@@ -28,9 +27,15 @@ if __name__ == '__main__':
     venus = Satellite("Venus", 4.87E24, sun, 0.1082E12 + 6.052E6)
     earth = Satellite("Earth", 5.972E24, sun, 149600000000)
     mars = Satellite("Mars", 0.642E24, sun, 0.228E12 + 3.390E6)
+    Satellite.time_interval = 60  # Minutes
     date1 = dt(2000, 5, 2)
     date2 = dt(2019, 6, 25)
     calculate_orbit_system(sun)
+
+    moon = Satellite("Luna", 7.34767309E22, earth, 384400E3)
+    calculate_orbit_system(earth)
+    moon.absolute_orbit_conversion()
+    moon.absolute_position_at_t(300)
     cp.disable()
     print("Orbits calculated per minute, two full orbits per satellite")
     cp.print_stats()
