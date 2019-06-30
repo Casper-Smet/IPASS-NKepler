@@ -54,7 +54,14 @@ def range_setter(var: float, maximum: float):
         return 0.0
 
 
-def time_difference(date1: dt, date2: dt):
-    # TODO Docstrings
-    # TODO exceptions
+def time_difference(date1: dt, date2: dt) -> float:
+    """
+    Calculates time_difference in seconds between date1 and date2.
+    :param date1: datetime.datetime
+    :param date2: datetime.datetime
+    :return: time in seconds - float
+    """
+    if type(date1) != dt or type(date2) != dt:
+        print("both date1 and date2 must be datetime.datetime objects")
+        raise TypeError
     return (date2 - date1).total_seconds()
