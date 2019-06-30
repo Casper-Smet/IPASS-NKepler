@@ -388,7 +388,7 @@ class Satellite:
         focus_orbit = self.focus.orbit
         satellite_orbit = self.orbit
         absolute_orbit = [[], []]
-        for t in range(len(focus_orbit[0])):
+        for t in range(len(satellite_orbit[0])):
             absolute_orbit[0].append(satellite_orbit[0][t] + focus_orbit[0][t])
             absolute_orbit[1].append(satellite_orbit[1][t] + focus_orbit[1][t])
 
