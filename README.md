@@ -26,4 +26,4 @@ The Moon around the Earth!
 Mercury, Venus, Earth and Mars around the sun during one mars orbital period (circa 687 days)
 ![](app/orbits/solarinner.gif)
 The Moon around the Earth, around the Sun!
-![](app/sim_solar_luna.py)
+![](app/simsolarluna.gif)
