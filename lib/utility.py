@@ -6,9 +6,10 @@ pi = 3.14159265359
 
 def degrees(angle: float) -> float:
     """Converts radians to degrees
-    :rtype: float
+
     :param angle: float
-    :return angle in degrees: float
+    :return: angle in degrees
+    :rtype: float
     """
     if type(angle) not in [int, float]:
         print("Please input correct type for angle")
@@ -22,9 +23,10 @@ def degrees(angle: float) -> float:
 
 def radians(angle: float) -> float:
     """Converts degrees to radians
-    :rtype: float
+
     :param angle: float
-    :return angle in radians: float
+    :return: angle in radians
+    :rtype: float
     """
     if type(angle) not in [int, float]:
         raise TypeError
@@ -37,9 +39,11 @@ def radians(angle: float) -> float:
 
 def range_setter(var: float, maximum: float):
     """Alters var to 0 >= var <= maximum
+
+    :param var: float
     :param maximum: float
-    :return: float
-    :type var: float
+    :return: var in range 0, maximum:
+    :rtype: float
     """
     if type(var) not in [int, float]:
         print("Please input correct type for var")
@@ -57,9 +61,11 @@ def range_setter(var: float, maximum: float):
 def time_difference(date1: dt, date2: dt) -> float:
     """
     Calculates time_difference in seconds between date1 and date2.
+
     :param date1: datetime.datetime
     :param date2: datetime.datetime
-    :return: time in seconds - float
+    :return: time in seconds
+    :rtype: float
     """
     if type(date1) != dt or type(date2) != dt:
         print("both date1 and date2 must be datetime.datetime objects")

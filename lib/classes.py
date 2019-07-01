@@ -13,6 +13,7 @@ class Focus:
 
     def __init__(self, name: str, mass: float):
         """Initializer for Focus
+
         :param name: String
         :param mass: Float
         :param radius: Float
@@ -27,7 +28,8 @@ class Focus:
     def add_to_satellites(self, satellite: object):
         """
         Adds satellite to satellite_list
-        :param satellite:
+
+        :param satellite: Satellite
         """
         if type(satellite) != Satellite:
             raise TypeError
@@ -37,8 +39,9 @@ class Focus:
     def largest_radius(self) -> float:
         """
         Returns the value of the biggest radius in satellite_list
+
+        :return: biggest radius
         :rtype: float
-        :return biggest radius:
         """
         if self.satellite_list:
             radii = [x.radius for x in self.satellite_list]
@@ -78,6 +81,7 @@ class Satellite:
                  known_date: dt = None, orbit: tuple = ([], [])):
         """
         Initializer for Satellite
+
         :param known_date: datetime.datetime
         :param focus: Focus or Satellite
         :param radius: float
@@ -177,7 +181,8 @@ class Satellite:
     def set_focus(self, focus: Focus, radius: float):
         """
         Sets focus and radius
-        :rtype: None
+
+
         :param focus: Focus
         :param radius: float
         """
@@ -188,7 +193,8 @@ class Satellite:
     def add_to_satellites(self, satellite: object):
         """
         Adds satellite to satellite_list
-        :param satellite:
+
+        :param satellite: Satellite
         """
         if type(satellite) != Satellite:
             raise TypeError
@@ -200,6 +206,7 @@ class Satellite:
         Set an origin point for the Satellite's orbit. Angular displacement is calculated at coordinates.
         Self.angle_at_0 is then set to the calculated angular displacement, and self.known_date to known_date_dt.
         This function is used for setting the angle_at_0.
+
         :param known_date_dt: datetime
         :param coordinates: list
         """
@@ -220,8 +227,9 @@ class Satellite:
         """
         Updates angle_at_0 based on the time difference between updated_date and self.known_date. Sets angle_at_0
         to newly calculated angular displacement, and self.known_date to updated_date.
+
         :param updated_date: datetime
-        :return angle_at_0: float
+        :return:  angle_at_0 - float
         """
         if type(updated_date) != dt:
             raise TypeError
@@ -238,6 +246,7 @@ class Satellite:
         """
         Calculates velocity of a satellite in orbit
         v = sqrt((G * M) / r)
+
         :return: Velocity
         :rtype: float
         """
@@ -252,6 +261,7 @@ class Satellite:
         """
         Calculates the period of the satellite (in seconds)
         T = (2 * pi * r) / v
+
         :return: Period in seconds
         :rtype: Float
         """
@@ -266,6 +276,7 @@ class Satellite:
         """
         Calculates the angular velocity of the satellite rad/ T^-1
         w = v / r
+
         :rtype: float
         :return: Angular velocity
         """
@@ -280,9 +291,10 @@ class Satellite:
         """
         Calculates x coordinate using the following formula:
         X = cos(O(t)) * r
-        :rtype: float
+
         :param angle: float radians
         :return: x-coordinate
+        :rtype: float
         """
         if type(angle) not in [int, float]:
             raise TypeError
@@ -293,9 +305,10 @@ class Satellite:
         """
         Calculates y coordinate using the following formula:
         y = sin(O(t)) * r
-        :rtype: float
+
         :param angle: float radians
         :return: y-coordinate
+        :rtype: float
         """
         if type(angle) not in [int, float]:
             raise TypeError
@@ -305,8 +318,10 @@ class Satellite:
         """
         Calculates angular displacement with coordinates of the satellite and its focus using the following formula:
         O = atan2(dy, dx)
+
         :param coordinates:
-        :return angular displacement:
+        :return: angular displacement
+        :rtype: float
         """
         if type(coordinates) not in [list, tuple]:
             raise TypeError
@@ -319,6 +334,9 @@ class Satellite:
         O(t) = wt + theta0
         or
         O(t) = wt
+
+        :param from_known: bool
+        :return: lambda expression
         """
 
         # Time interval is the amount of time that passes per t in seconds
@@ -334,6 +352,7 @@ class Satellite:
     def angular_displacement_to_coordinates(self, angular_displacement: float) -> tuple:
         """
         Calculates X,Y coordinates with angular position. Calls angle_to_y and angle_to_x
+
         :return: x,y
         :param angular_displacement:
         :rtype: tuple
@@ -344,7 +363,8 @@ class Satellite:
 
     def calculate_orbit(self, period: float = None, from_known: bool = False) -> list:
         """
-        Calculates all orbital coordinates
+        Calculates all relative orbital coordinates
+
         :param from_known: bool
         :param period: float
         :return: orbit
@@ -374,6 +394,7 @@ class Satellite:
         Calculates the absolute orbit of the satellite based on its focus' orbit. The focus has to be a Satellite, and
         its relative orbit must already have been calculated. Relative orbit of the sub satellite must also have been
         calculated. Adds focus coordinates at t to satellite coordinates at t.
+
         :return: absolute orbit
         :rtype: tuple
         """
@@ -397,6 +418,7 @@ class Satellite:
         """
         Calculates absolute position of satellite at t. When from_known is true, angle_at_0 is taken into account for
         the purposes of this calculation. Calculates and adds focus coordinates at t to satellite coordinates at t.
+
         :param t: float or int
         :param from_known: bool
         :return: coordinates - tuple
@@ -419,6 +441,7 @@ class Satellite:
     def to_json(self, filename: str = None, save_orbit: bool = False):
         """
         Dumps satellite and focus data to JSON
+
         :param save_orbit: bool
         :param filename: str
         """
@@ -467,10 +490,11 @@ class Satellite:
 
 def json_satellite_construct(file_string: str) -> tuple:
     """
-    :rtype: tuple
+    Construct a satellite from JSON file
+
     :param file_string: str
     :return: a tuple containing a satellite and a focus
-    """
+    :rtype: tuple"""
     with open(file_string + '.json') as satellite_json:
         data = json.load(satellite_json)
 
