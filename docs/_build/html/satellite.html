@@ -1,0 +1,375 @@
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="utf-8" />
+    <title>Satellite &#8212; NKepler 1.0 documentation</title>
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="_static/language_data.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Focus" href="focus.html" />
+    <link rel="prev" title="NKepler tutorial" href="tutorial.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <div class="section" id="satellite">
+<h1>Satellite<a class="headerlink" href="#satellite" title="Permalink to this headline">¶</a></h1>
+<div class="toctree-wrapper compound">
+</div>
+<dl class="class">
+<dt id="classes.Satellite">
+<em class="property">class </em><code class="sig-prename descclassname">classes.</code><code class="sig-name descname">Satellite</code><span class="sig-paren">(</span><em class="sig-param">name: str</em>, <em class="sig-param">mass: float</em>, <em class="sig-param">focus: classes.Focus = None</em>, <em class="sig-param">radius: float = None</em>, <em class="sig-param">velocity: float = None</em>, <em class="sig-param">period: float = None</em>, <em class="sig-param">angular_velocity: float = None</em>, <em class="sig-param">known_date: datetime.datetime = None</em>, <em class="sig-param">orbit: tuple = ([]</em>, <span class="optional">[</span><span class="optional">]</span><em class="sig-param">)</em><span class="sig-paren">)</span><a class="headerlink" href="#classes.Satellite" title="Permalink to this definition">¶</a></dt>
+<dd><p>Satellite that will orbit</p>
+<dl class="method">
+<dt id="classes.Satellite.absolute_orbit_conversion">
+<code class="sig-name descname">absolute_orbit_conversion</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; tuple<a class="headerlink" href="#classes.Satellite.absolute_orbit_conversion" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculates the absolute orbit of the satellite based on its focus’ orbit. The focus has to be a Satellite, and
+its relative orbit must already have been calculated. Relative orbit of the sub satellite must also have been
+calculated. Adds focus coordinates at t to satellite coordinates at t.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>absolute orbit</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>tuple</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="classes.Satellite.absolute_position_at_t">
+<code class="sig-name descname">absolute_position_at_t</code><span class="sig-paren">(</span><em class="sig-param">t: float</em>, <em class="sig-param">from_known: bool = False</em><span class="sig-paren">)</span> &#x2192; tuple<a class="headerlink" href="#classes.Satellite.absolute_position_at_t" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculates absolute position of satellite at t. When from_known is true, angle_at_0 is taken into account for
+the purposes of this calculation. Calculates and adds focus coordinates at t to satellite coordinates at t.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>t</strong> – float or int</p></li>
+<li><p><strong>from_known</strong> – bool</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>coordinates - tuple</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="classes.Satellite.add_to_satellites">
+<code class="sig-name descname">add_to_satellites</code><span class="sig-paren">(</span><em class="sig-param">satellite: object</em><span class="sig-paren">)</span><a class="headerlink" href="#classes.Satellite.add_to_satellites" title="Permalink to this definition">¶</a></dt>
+<dd><p>Adds satellite to satellite_list</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>satellite</strong> – Satellite</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="classes.Satellite.angle_to_x">
+<code class="sig-name descname">angle_to_x</code><span class="sig-paren">(</span><em class="sig-param">angle: float</em><span class="sig-paren">)</span> &#x2192; float<a class="headerlink" href="#classes.Satellite.angle_to_x" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculates x coordinate using the following formula:
+X = cos(O(t)) * r</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>angle</strong> – float radians</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>x-coordinate</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="classes.Satellite.angle_to_y">
+<code class="sig-name descname">angle_to_y</code><span class="sig-paren">(</span><em class="sig-param">angle: float</em><span class="sig-paren">)</span> &#x2192; float<a class="headerlink" href="#classes.Satellite.angle_to_y" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculates y coordinate using the following formula:
+y = sin(O(t)) * r</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>angle</strong> – float radians</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>y-coordinate</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="classes.Satellite.angular_displacement_at_t">
+<code class="sig-name descname">angular_displacement_at_t</code><span class="sig-paren">(</span><em class="sig-param">from_known: bool = False</em><span class="sig-paren">)</span><a class="headerlink" href="#classes.Satellite.angular_displacement_at_t" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns lambda that calculates angular position at time index t.
+O(t) = wt + theta0
+or
+O(t) = wt</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>from_known</strong> – bool</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>lambda expression</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="classes.Satellite.angular_displacement_to_coordinates">
+<code class="sig-name descname">angular_displacement_to_coordinates</code><a class="headerlink" href="#classes.Satellite.angular_displacement_to_coordinates" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculates X,Y coordinates with angular position. Calls angle_to_y and angle_to_x</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>x,y</p>
+</dd>
+<dt class="field-even">Parameters</dt>
+<dd class="field-even"><p><strong>angular_displacement</strong> – </p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>tuple</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="classes.Satellite.calculate_angular_velocity">
+<code class="sig-name descname">calculate_angular_velocity</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; float<a class="headerlink" href="#classes.Satellite.calculate_angular_velocity" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculates the angular velocity of the satellite rad/ T^-1
+w = v / r</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Angular velocity</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="classes.Satellite.calculate_orbit">
+<code class="sig-name descname">calculate_orbit</code><span class="sig-paren">(</span><em class="sig-param">period: float = None</em>, <em class="sig-param">from_known: bool = False</em><span class="sig-paren">)</span> &#x2192; list<a class="headerlink" href="#classes.Satellite.calculate_orbit" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculates all relative orbital coordinates</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>from_known</strong> – bool</p></li>
+<li><p><strong>period</strong> – float</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>orbit</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="classes.Satellite.calculate_period">
+<code class="sig-name descname">calculate_period</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; float<a class="headerlink" href="#classes.Satellite.calculate_period" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculates the period of the satellite (in seconds)
+T = (2 * pi * r) / v</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Period in seconds</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>Float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="classes.Satellite.calculate_velocity">
+<code class="sig-name descname">calculate_velocity</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; float<a class="headerlink" href="#classes.Satellite.calculate_velocity" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculates velocity of a satellite in orbit
+v = sqrt((G * M) / r)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Velocity</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="classes.Satellite.coordinates_to_angle">
+<code class="sig-name descname">coordinates_to_angle</code><span class="sig-paren">(</span><em class="sig-param">coordinates: list</em><span class="sig-paren">)</span><a class="headerlink" href="#classes.Satellite.coordinates_to_angle" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculates angular displacement with coordinates of the satellite and its focus using the following formula:
+O = atan2(dy, dx)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>coordinates</strong> – </p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>angular displacement</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="classes.Satellite.set_focus">
+<code class="sig-name descname">set_focus</code><span class="sig-paren">(</span><em class="sig-param">focus: classes.Focus</em>, <em class="sig-param">radius: float</em><span class="sig-paren">)</span><a class="headerlink" href="#classes.Satellite.set_focus" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets focus and radius</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>focus</strong> – Focus</p></li>
+<li><p><strong>radius</strong> – float</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="classes.Satellite.set_origin">
+<code class="sig-name descname">set_origin</code><span class="sig-paren">(</span><em class="sig-param">known_date_dt: datetime.datetime</em>, <em class="sig-param">coordinates: list</em><span class="sig-paren">)</span><a class="headerlink" href="#classes.Satellite.set_origin" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set an origin point for the Satellite’s orbit. Angular displacement is calculated at coordinates.
+Self.angle_at_0 is then set to the calculated angular displacement, and self.known_date to known_date_dt.
+This function is used for setting the angle_at_0.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>known_date_dt</strong> – datetime</p></li>
+<li><p><strong>coordinates</strong> – list</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="classes.Satellite.to_json">
+<code class="sig-name descname">to_json</code><span class="sig-paren">(</span><em class="sig-param">filename: str = None</em>, <em class="sig-param">save_orbit: bool = False</em><span class="sig-paren">)</span><a class="headerlink" href="#classes.Satellite.to_json" title="Permalink to this definition">¶</a></dt>
+<dd><p>Dumps satellite and focus data to JSON</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>save_orbit</strong> – bool</p></li>
+<li><p><strong>filename</strong> – str</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="classes.Satellite.update_origin">
+<code class="sig-name descname">update_origin</code><span class="sig-paren">(</span><em class="sig-param">updated_date: datetime.datetime</em><span class="sig-paren">)</span> &#x2192; float<a class="headerlink" href="#classes.Satellite.update_origin" title="Permalink to this definition">¶</a></dt>
+<dd><p>Updates angle_at_0 based on the time difference between updated_date and self.known_date. Sets angle_at_0
+to newly calculated angular displacement, and self.known_date to updated_date.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>updated_date</strong> – datetime</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>angle_at_0 - float</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">NKepler</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="tutorial.html">NKepler tutorial</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Satellite</a><ul class="simple">
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="focus.html">Focus</a></li>
+<li class="toctree-l1"><a class="reference internal" href="utility.html">Utility</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="tutorial.html" title="previous chapter">NKepler tutorial</a></li>
+      <li>Next: <a href="focus.html" title="next chapter">Focus</a></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2019, Casper Smet.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 2.1.0</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="_sources/satellite.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

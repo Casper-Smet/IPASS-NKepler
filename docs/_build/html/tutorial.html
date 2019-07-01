@@ -1,0 +1,210 @@
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="utf-8" />
+    <title>NKepler tutorial &#8212; NKepler 1.0 documentation</title>
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="_static/language_data.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Satellite" href="satellite.html" />
+    <link rel="prev" title="Welcome to NKepler’s documentation!" href="index.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <div class="section" id="nkepler-tutorial">
+<h1>NKepler tutorial<a class="headerlink" href="#nkepler-tutorial" title="Permalink to this headline">¶</a></h1>
+<p>In this short tutorial, I will be explaining you the steps needed to calculate one orbital period using NKepler. I would
+recommend looking at the simulation files in the app folder feature in the Github <a class="reference external" href="https://github.com/Casper-Smet/IPASS-NKepler">repository</a>.</p>
+<div class="section" id="step-1-import-nkepler">
+<h2>Step 1: Import NKepler<a class="headerlink" href="#step-1-import-nkepler" title="Permalink to this headline">¶</a></h2>
+<blockquote>
+<div><p>from lib.classes import Satellite, Focus</p>
+</div></blockquote>
+</div>
+<div class="section" id="step-2-initializing-the-two-objects">
+<h2>Step 2: Initializing the two objects<a class="headerlink" href="#step-2-initializing-the-two-objects" title="Permalink to this headline">¶</a></h2>
+<p>To calculate the orbit of a satellite, two objects are needed: a Focus and a Satellite. The Satellite is the object that
+orbits, while the Focus is (usually) the static object around which the Satellite orbits. If you do not know the mass of
+your satellite, you can enter 1 instead. It is only used when the satellite also functions as a Focus.</p>
+<blockquote>
+<div><p>sat1 = Satellite(name: str, mass: float)</p>
+<p>foc1 = Focus(name: str, mass: float)</p>
+</div></blockquote>
+<p>In order to couple these objects, the following statement may be used:</p>
+<blockquote>
+<div><p>sat1.set_focus(foc1, radius: float)</p>
+</div></blockquote>
+<p>Set_focus also adds sat1 to foc1’s satellite_list, this way it is easier to access later!</p>
+</div>
+<div class="section" id="step-3-calculating-the-necessary-variables">
+<h2>Step 3: Calculating the necessary variables<a class="headerlink" href="#step-3-calculating-the-necessary-variables" title="Permalink to this headline">¶</a></h2>
+<p>In order to calculate orbits, one needs a couple of variables:</p>
+<ul class="simple">
+<li><p>The satellite’s velocity</p></li>
+<li><p>The satellite’s period</p></li>
+<li><p>The satellite’s angular velocity</p></li>
+</ul>
+<p>These need to be calculated in order using the following lines of code:</p>
+<blockquote>
+<div><p>sat1.calculate_velocity()</p>
+<p>sat1.calculate_period()</p>
+<p>sat1.calculate_angular_velocity()</p>
+</div></blockquote>
+</div>
+<div class="section" id="step-4-optional-setting-time-interval">
+<h2>Step 4: (OPTIONAL) Setting time_interval<a class="headerlink" href="#step-4-optional-setting-time-interval" title="Permalink to this headline">¶</a></h2>
+<p>The variable time_interval is used to to decide how big the steps in t are. Their standard value is 3600, which equals 1
+hour. If you want to calculate for different time intervals, run the following line of code:</p>
+<blockquote>
+<div><p>Satellite.time_interval = # Whatever value you want (1 = 1 sec, 60 = 1 min, 3600 = 1 hour, etc.)</p>
+</div></blockquote>
+</div>
+<div class="section" id="step-5-optional-calculating-angular-displacement">
+<h2>Step 5: (OPTIONAL) Calculating angular displacement<a class="headerlink" href="#step-5-optional-calculating-angular-displacement" title="Permalink to this headline">¶</a></h2>
+<p>The next step is to call the following function:</p>
+<blockquote>
+<div><p>ang_pos_lambda = sat1.angular_displacement_at_t()</p>
+</div></blockquote>
+<p>This gets a lambda expression used to translate t (time) to angular displacement.
+To then calculate angular displacement at t, simply enter the following line (do note that t is multiplied by
+time_interval, do not t in seconds lest you set time_interval to 1:</p>
+<blockquote>
+<div><p>ang_pos = ang_pos_lambda(t)</p>
+</div></blockquote>
+</div>
+<div class="section" id="step-5-optional-calculating-x-y-coordinates">
+<h2>Step 5: (OPTIONAL) Calculating X, Y coordinates<a class="headerlink" href="#step-5-optional-calculating-x-y-coordinates" title="Permalink to this headline">¶</a></h2>
+<p>Then, you can calculate the x and y coordinates of the satellite using the following two lines:</p>
+<blockquote>
+<div><p>x = sat1.angle_to_x(ang_pos)</p>
+<p>y = sat1.angle_to_x(ang_pos)</p>
+</div></blockquote>
+</div>
+<div class="section" id="step-6-optional-calculating-x-y-coordinates-the-smarter-way">
+<h2>Step 6: (OPTIONAL) Calculating X, Y coordinates, the smarter way!<a class="headerlink" href="#step-6-optional-calculating-x-y-coordinates-the-smarter-way" title="Permalink to this headline">¶</a></h2>
+<p>Instead of calling angle_to_x and angle_to_y separately, you can use the following line:</p>
+<blockquote>
+<div><p>x, y = sat1.angular_displacement_to_coordinates</p>
+</div></blockquote>
+</div>
+<div class="section" id="step-7-calculating-orbits-the-smartest-way">
+<h2>Step 7: Calculating orbits, the smartest way!<a class="headerlink" href="#step-7-calculating-orbits-the-smartest-way" title="Permalink to this headline">¶</a></h2>
+<p>You can skip steps 4 through 6 by using the following line:</p>
+<blockquote>
+<div><p>orbit = sat1.calculate_orbit(period: optional)</p>
+</div></blockquote>
+<p>This one function does everything steps 4 through 6 does for whatever period you would like. Here, the period can be
+entered in seconds.</p>
+</div>
+<div class="section" id="more-features">
+<h2>More features:<a class="headerlink" href="#more-features" title="Permalink to this headline">¶</a></h2>
+<p>The workings of the other features aren’t included in this tutorial. They can be understood through reading the
+documentation and reading the sim files in the app folder. The latter can be found in the ‘app’ folder in <a class="reference external" href="https://github.com/Casper-Smet/IPASS-NKepler">Repository</a>.</p>
+</div>
+</div>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">NKepler</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">NKepler tutorial</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#step-1-import-nkepler">Step 1: Import NKepler</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#step-2-initializing-the-two-objects">Step 2: Initializing the two objects</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#step-3-calculating-the-necessary-variables">Step 3: Calculating the necessary variables</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#step-4-optional-setting-time-interval">Step 4: (OPTIONAL) Setting time_interval</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#step-5-optional-calculating-angular-displacement">Step 5: (OPTIONAL) Calculating angular displacement</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#step-5-optional-calculating-x-y-coordinates">Step 5: (OPTIONAL) Calculating X, Y coordinates</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#step-6-optional-calculating-x-y-coordinates-the-smarter-way">Step 6: (OPTIONAL) Calculating X, Y coordinates, the smarter way!</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#step-7-calculating-orbits-the-smartest-way">Step 7: Calculating orbits, the smartest way!</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#more-features">More features:</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="satellite.html">Satellite</a></li>
+<li class="toctree-l1"><a class="reference internal" href="focus.html">Focus</a></li>
+<li class="toctree-l1"><a class="reference internal" href="utility.html">Utility</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="index.html" title="previous chapter">Welcome to NKepler’s documentation!</a></li>
+      <li>Next: <a href="satellite.html" title="next chapter">Satellite</a></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2019, Casper Smet.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 2.1.0</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="_sources/tutorial.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>
