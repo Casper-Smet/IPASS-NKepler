@@ -12,12 +12,12 @@ simulation files before executing them.
 
 ## Documentation
 You can find the documentation in the folder 'docs/_build/html'. To view them, download the specified folder and open 
-'index.html'. This includes a basic tutorial
+'index.html'. This includes a [basic tutorial](https://github.com/Casper-Smet/IPASS-NKepler/blob/master/docs/tutorial.rst). 
 
 ## Report
 You can find the report, poster and formula booklet used to present NKepler in the folder 'report'. If you're interested
-in learning about the design process of NKepler, or want to read more formal equations than the one in the documentation
-, this is the place to be. 
+in learning about the design process of NKepler, or want to read more formal equations than the one in the documentation, 
+this is the place to be. 
 
 ## Examples:
 
