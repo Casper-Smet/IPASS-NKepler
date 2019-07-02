@@ -16,7 +16,6 @@ class Focus:
 
         :param name: String
         :param mass: Float
-        :param radius: Float
         """
         try:
             self.name = str(name)
@@ -76,7 +75,7 @@ class Satellite:
     # When satellite is also utilized as a focus
     satellite_list: list
 
-    def __init__(self, name: str, mass: float, focus: Focus = None, radius: float = None, velocity: float = None,
+    def __init__(self, name: str, mass: float = 1.0, focus: Focus = None, radius: float = None, velocity: float = None,
                  period: float = None, angular_velocity: float = None,
                  known_date: dt = None, orbit: tuple = ([], [])):
         """
