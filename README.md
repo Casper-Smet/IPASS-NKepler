@@ -1,3 +1,6 @@
+# fast-python
+Same structure-ish, just rewritten using NumPy.
+
 # IPASS: NKepler
 This is the repository containing the IPASS project NKepler (short for not Kepler). Using the NKepler library you
 can calculate circular orbits with Newton's second law.
