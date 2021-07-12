@@ -1,6 +1,7 @@
 from datetime import datetime as dt
 
 gravitational_constant = 6.67408 * 10 ** (-11)  # m^3/kgs^2
+G = gravitational_constant
 pi = 3.14159265359
 
 
