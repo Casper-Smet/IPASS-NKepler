@@ -1,0 +1,7 @@
+[flake8]
+exclude = setup.py, scratch.py, srcdocs/
+ignore = ANN101
+count = True
+statistics = True
+docstring-convention = google
+max-line-length = 99
