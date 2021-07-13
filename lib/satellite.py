@@ -1,10 +1,17 @@
+from utility import G
+import classes
+from matplotlib import style
+import numpy as np
+import matplotlib.pyplot as plt
+import matplotlib.animation as animation
 from dataclasses import Field, dataclass, field
 from functools import lru_cache
 from typing import List, Union
 
-import numpy as np
+# from lib.classes import Focus, Satellite
+import matplotlib
 
-from utility import G
+matplotlib.use("TkAgg")
 
 
 @dataclass
@@ -107,17 +114,51 @@ class Satellite(Focus):
 
     def calculate_orbit(self, period: float = None, from_known: bool = False) -> np.ndarray:
         period = self.period if period is None else period
-        time_steps = int(period / self.time_interval)
+        # print(period)
+        time_steps = int(period / self.time_interval) + 1
+        # print(self.time_interval)
+        # print(time_steps)
         angular_poss = self.angular_displacement_at_t(np.arange(time_steps))
         self.orbit = self.angular_displacement_to_coordinates(angular_poss)
         return self.orbit
 
 
+def animate(ax, *orbits: List[np.ndarray], axis_range=1e10) -> None:
+    def anon_anim(i: int):
+        ax.clear()
+        ax.set_ylim([axis_range * -1.1, axis_range * 1.1])
+        ax.set_xlim([axis_range * -1.1, axis_range * 1.1])
+        ax.scatter([0], [0])
+        for orbit in orbits:
+            ax.scatter(*(orbit[:, i]))
+    return anon_anim
+
+
 def main() -> None:
     sun = Focus("Sun", mass=int(1.989E30))
-    earth = Satellite("Earth", mass=int(5.972E24), focus=sun, radius=int(384400E3))
-    print(earth)
-    print(earth.calculate_orbit(earth.period * 365))
+    earth = Satellite("Earth", mass=int(5.972E24), focus=sun, radius=149600000000)
+    # # print(earth)
+    b = (earth.calculate_orbit(earth.period))
+    sun = classes.Focus("Sun", 1.989E30)
+    earth = classes.Satellite("Earth", int(5.972E24), sun, 149600000000)
+    earth.calculate_velocity()
+    earth.calculate_period()
+    earth.calculate_angular_velocity()
+    a = np.array(earth.calculate_orbit(earth.period))
+
+    style.use('ggplot')
+
+    fig = plt.figure(figsize=(10, 6))
+    ax1 = fig.add_subplot(1, 1, 1)
+    box = ax1.get_position()
+    ax1.set_position([box.x0 + box.width * 0.1, box.y0, box.width * 0.5, box.height / 6 * 5])
+
+    anim_func = animate(ax1, b, a, axis_range=earth.radius*1.1)
+    # import matplotlib.pyplot as plt
+    ani = animation.FuncAnimation(fig, anim_func, interval=1, frames=a.shape[1])
+    # plt.scatter(b[0], b[1])
+    # plt.scatter(a[0], a[1])
+    plt.show()
 
 
 if __name__ == "__main__":
